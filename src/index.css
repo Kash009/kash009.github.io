@@ -87,3 +87,177 @@ body {
         overflow: auto;
     }
 }
+
+@media (max-width: 1023px) {
+    body {
+        overflow-y: auto;
+    }
+}
+
+/* allow nested grid/flex children to scroll correctly */
+.min-h-0 {
+    min-height: 0;
+}
+
+/* PDF export readability helpers */
+#pdf-export-layout * {
+    text-shadow: none !important;
+}
+
+#pdf-export-layout h1,
+#pdf-export-layout h2,
+#pdf-export-layout h3 {
+    letter-spacing: 0.02em;
+}
+
+#pdf-export-layout a {
+    color: #86efac !important;
+    text-decoration: none;
+}
+
+/* Visibility control */
+.print-only {
+    display: none;
+}
+.screen-only {
+    display: block;
+}
+
+/* Print layout */
+@media print {
+    @page {
+        size: A4;
+        margin: 10mm;
+    }
+
+    html,
+    body,
+    #root {
+        height: auto !important;
+        overflow: visible !important;
+        background: #05070a !important;
+    }
+
+    .screen-only {
+        display: none !important;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    #pdf-export-layout {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #05070a !important;
+        color: #d1fae5 !important;
+    }
+
+    .print-header {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .print-section {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 8px !important;
+    }
+
+    /* tighten typography a bit for better page usage */
+    #pdf-export-layout h1 {
+        font-size: 18px !important;
+        line-height: 1.2 !important;
+    }
+
+    #pdf-export-layout h2,
+    #pdf-export-layout h3 {
+        font-size: 13px !important;
+        line-height: 1.25 !important;
+        margin: 0 0 4px 0 !important;
+    }
+
+    #pdf-export-layout p,
+    #pdf-export-layout li,
+    #pdf-export-layout span,
+    #pdf-export-layout a {
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+    }
+
+    #pdf-export-layout ul {
+        margin: 4px 0 0 14px !important;
+        padding: 0 !important;
+    }
+
+    #pdf-export-layout * {
+        text-shadow: none !important;
+        box-shadow: none !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    a {
+        text-decoration: none !important;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dense tiling layout for large screens */
+.tile-grid-dense {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+        "about about about about terminal terminal terminal terminal contact contact contact contact"
+        "skills skills skills skills projects projects projects projects experience experience experience experience";
+    gap: 0.75rem;
+    grid-auto-rows: minmax(250px, auto);
+}
+
+.tile-about {
+    grid-area: about;
+}
+.tile-terminal {
+    grid-area: terminal;
+}
+.tile-contact {
+    grid-area: contact;
+}
+.tile-skills {
+    grid-area: skills;
+}
+.tile-projects {
+    grid-area: projects;
+}
+.tile-experience {
+    grid-area: experience;
+}
+
+/* fallback for smaller desktop/tablet */
+@media (max-width: 1279px) {
+    .tile-grid-dense {
+        grid-template-areas:
+            "about about about about about about terminal terminal terminal terminal terminal terminal"
+            "contact contact contact contact contact contact skills skills skills skills skills skills"
+            "projects projects projects projects projects projects experience experience experience experience experience experience";
+    }
+}
+
+/* mobile stacked */
+@media (max-width: 1023px) {
+    .tile-grid-dense {
+        display: block;
+    }
+}

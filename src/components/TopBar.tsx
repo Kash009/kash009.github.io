@@ -1,9 +1,18 @@
 type Props = {
   focusedTitle?: string;
   onExportPdf?: () => void;
+  exportingPdf?: boolean;
+  layoutMode: "tiling" | "floating";
+  onToggleLayoutMode: () => void;
 };
 
-export default function TopBar({ focusedTitle, onExportPdf }: Props) {
+export default function TopBar({
+  focusedTitle,
+  onExportPdf,
+  exportingPdf = false,
+  layoutMode,
+  onToggleLayoutMode,
+}: Props) {
   const now = new Date();
   const time = now.toLocaleTimeString([], {
     hour: "2-digit",
@@ -22,13 +31,23 @@ export default function TopBar({ focusedTitle, onExportPdf }: Props) {
           : "session://desktop"}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onToggleLayoutMode}
+          className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[10px] uppercase tracking-wider text-emerald-200 hover:bg-emerald-400/20"
+          title="Toggle layout mode"
+        >
+          {layoutMode === "tiling" ? "Tiling" : "Floating"}
+        </button>
+
         <button
           onClick={onExportPdf}
-          className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[10px] uppercase tracking-wider text-emerald-200 hover:bg-emerald-400/20"
+          disabled={exportingPdf}
+          className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[10px] uppercase tracking-wider text-emerald-200 hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Export PDF
+          {exportingPdf ? "Exporting..." : "Export PDF"}
         </button>
+
         <div className="text-xs text-emerald-300/90">{time}</div>
       </div>
     </header>

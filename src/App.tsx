@@ -1,8 +1,27 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
 import { exportElementToPdf } from "./utils/exportPdf";
 import { useMediaQuery } from "./hooks/useMediaQuery";
+import {
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCenter,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+import PdfExportLayout from "./components/PdfExportLayout";
 
 import DesktopIcon from "./components/DesktopIcon";
+import BootLoader from "./components/BootLoader";
 import Dock from "./components/Dock";
 import TopBar from "./components/TopBar";
 import WindowFrame from "./components/WindowFrame";
@@ -12,9 +31,12 @@ import AboutWindow from "./components/windows/AboutWindow";
 import ProjectsWindow from "./components/windows/ProjectsWindow";
 import SkillsWindow from "./components/windows/SkillsWindow";
 import ExperienceWindow from "./components/windows/ExperienceWindow";
-import ResumeWindow from "./components/windows/ResumeWindow";
+// import ResumeWindow from "./components/windows/ResumeWindow";
 import ContactWindow from "./components/windows/ContactWindow";
 import TerminalWindow from "./components/windows/TerminalWindow";
+
+const TOPBAR_HEIGHT = 50;
+const BOTTOM_GAP = 56;
 
 const initialWindows: Record<WindowId, WindowState> = {
   about: {
@@ -24,70 +46,10 @@ const initialWindows: Record<WindowId, WindowState> = {
     minimized: false,
     maximized: false,
     z: 2,
-    x: 40,
-    y: 64,
-    width: 360,
-    height: 260,
-  },
-  projects: {
-    id: "projects",
-    title: "Projects",
-    isOpen: true,
-    minimized: false,
-    maximized: false,
-    z: 3,
-    x: 420,
-    y: 64,
-    width: 560,
-    height: 320,
-  },
-  skills: {
-    id: "skills",
-    title: "Skills",
-    isOpen: true,
-    minimized: false,
-    maximized: false,
-    z: 4,
-    x: 40,
-    y: 340,
+    x: 28,
+    y: 56,
     width: 420,
-    height: 260,
-  },
-  experience: {
-    id: "experience",
-    title: "Experience",
-    isOpen: true,
-    minimized: false,
-    maximized: false,
-    z: 5,
-    x: 480,
-    y: 400,
-    width: 500,
-    height: 280,
-  },
-  resume: {
-    id: "resume",
-    title: "Resume",
-    isOpen: true,
-    minimized: false,
-    maximized: false,
-    z: 6,
-    x: 1000,
-    y: 64,
-    width: 300,
-    height: 210,
-  },
-  contact: {
-    id: "contact",
-    title: "Contact",
-    isOpen: true,
-    minimized: false,
-    maximized: false,
-    z: 7,
-    x: 1000,
-    y: 290,
-    width: 300,
-    height: 180,
+    height: 300,
   },
   terminal: {
     id: "terminal",
@@ -95,24 +57,277 @@ const initialWindows: Record<WindowId, WindowState> = {
     isOpen: true,
     minimized: false,
     maximized: false,
-    z: 8,
-    x: 1000,
-    y: 484,
-    width: 300,
-    height: 200,
+    z: 3,
+    x: 460,
+    y: 56,
+    width: 420,
+    height: 300,
+  },
+  contact: {
+    id: "contact",
+    title: "Contact",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 4,
+    x: 892,
+    y: 56,
+    width: 420,
+    height: 300,
+  },
+  skills: {
+    id: "skills",
+    title: "Skills",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 5,
+    x: 28,
+    y: 370,
+    width: 420,
+    height: 340,
+  },
+  projects: {
+    id: "projects",
+    title: "Projects",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 6,
+    x: 460,
+    y: 370,
+    width: 420,
+    height: 340,
+  },
+  experience: {
+    id: "experience",
+    title: "Experience",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 7,
+    x: 892,
+    y: 370,
+    width: 420,
+    height: 340,
   },
 };
 
+const tileSpanClass: Record<WindowId, string> = {
+  about: "col-span-12 lg:col-span-4",
+  terminal: "col-span-12 lg:col-span-4",
+  contact: "col-span-12 lg:col-span-4",
+  skills: "col-span-12 lg:col-span-4",
+  projects: "col-span-12 lg:col-span-8",
+  experience: "col-span-12 lg:col-span-8",
+};
+
+function TiledCard({
+  title,
+  children,
+  dragHandleProps,
+}: {
+  title: string;
+  children: React.ReactNode;
+  dragHandleProps?: React.HTMLAttributes<HTMLButtonElement>;
+}) {
+  return (
+    <article className="glow-border flex h-full min-h-0 flex-col overflow-hidden rounded-md bg-[#070d12]/92">
+      <header className="flex h-10 shrink-0 items-center justify-between border-b border-emerald-400/20 bg-[#091118] px-3">
+        <span className="text-xs uppercase tracking-wider text-emerald-300/90">
+          {title}.sys
+        </span>
+
+        <button
+          {...dragHandleProps}
+          className="cursor-grab active:cursor-grabbing rounded border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[10px] uppercase tracking-wider text-emerald-200 hover:bg-emerald-400/20"
+          title="Drag to reorder tile"
+        >
+          Move
+        </button>
+      </header>
+
+      <div className="min-h-0 flex-1 overflow-y-auto p-4">{children}</div>
+    </article>
+  );
+}
+
+function SortableTile({
+  id,
+  className,
+  children,
+}: {
+  id: WindowId;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`${className ?? ""} min-h-0 ${isDragging ? "opacity-70" : ""}`}
+    >
+      {/* drag handle props injected via context-like clone */}
+      {typeof children === "object" && children !== null
+        ? (children as React.ReactElement<any>)
+        : children}
+      {/* hidden handle passthrough container */}
+      <div className="hidden" {...attributes} {...listeners} />
+    </div>
+  );
+}
+
 export default function App() {
   const desktopRef = useRef<HTMLDivElement>(null);
+  const pdfRef = useRef<HTMLDivElement>(null);
+  const restoreSnapshotRef = useRef<
+    Partial<Record<WindowId, Pick<WindowState, "x" | "y" | "width" | "height">>>
+  >({});
+
+  const [bootDone, setBootDone] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const [layoutMode, setLayoutMode] = useState<"tiling" | "floating">("tiling");
+  const [swapSource, setSwapSource] = useState<WindowId | null>(null);
+  const [tileOrder, setTileOrder] = useState<WindowId[]>([
+    "about",
+    "terminal",
+    "contact",
+    "skills",
+    "projects",
+    "experience",
+    // "resume",
+  ]);
+
+  const tileAreaClass: Record<WindowId, string> = {
+    about: "tile-about",
+    terminal: "tile-terminal",
+    contact: "tile-contact",
+    skills: "tile-skills",
+    projects: "tile-projects",
+    experience: "tile-experience",
+  };
+
+  useEffect(() => {
+    const seen = sessionStorage.getItem("bootSeen");
+    if (seen === "1") setBootDone(true);
+  }, []);
+
+  const handleBootComplete = () => {
+    sessionStorage.setItem("bootSeen", "1");
+    setBootDone(true);
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
+
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
-  const handleExportPdf = async () => {
-    if (!desktopRef.current) return;
-    await exportElementToPdf(desktopRef.current, {
-      fileName: "kashif-ai-engineer-portfolio.pdf",
-      scale: 2,
+  const handleTileDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    setTileOrder((items) => {
+      const oldIndex = items.indexOf(active.id as WindowId);
+      const newIndex = items.indexOf(over.id as WindowId);
+      if (oldIndex < 0 || newIndex < 0) return items;
+      return arrayMove(items, oldIndex, newIndex);
     });
+  };
+
+  function SortableTileCard({
+    id,
+    className,
+    title,
+    children,
+  }: {
+    id: WindowId;
+    className?: string;
+    title: string;
+    children: React.ReactNode;
+  }) {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id });
+
+    const style: React.CSSProperties = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+    };
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`${className ?? ""} min-h-0 ${isDragging ? "z-50 opacity-80" : ""}`}
+      >
+        <TiledCard
+          title={title}
+          dragHandleProps={{ ...attributes, ...listeners }}
+        >
+          {children}
+        </TiledCard>
+      </div>
+    );
+  }
+
+  const swapTiles = (a: WindowId, b: WindowId) => {
+    if (a === b) return;
+    setTileOrder((prev) => {
+      const next = [...prev];
+      const ai = next.indexOf(a);
+      const bi = next.indexOf(b);
+      if (ai === -1 || bi === -1) return prev;
+      [next[ai], next[bi]] = [next[bi], next[ai]];
+      return next;
+    });
+  };
+
+  const onTileSwapClick = (id: WindowId) => {
+    if (!swapSource) {
+      setSwapSource(id);
+      return;
+    }
+    swapTiles(swapSource, id);
+    setSwapSource(null);
+  };
+
+  const handleExportPdf = async () => {
+    if (!pdfRef.current || isExportingPdf) return;
+
+    try {
+      setIsExportingPdf(true);
+      await exportElementToPdf(pdfRef.current, {
+        fileName: "kashif-ai-engineer-portfolio.pdf",
+        scale: 2,
+        backgroundColor: "#05070a",
+      });
+    } finally {
+      setIsExportingPdf(false);
+    }
   };
 
   const [windows, setWindows] =
@@ -157,31 +372,42 @@ export default function App() {
   const toggleMaximize = (id: WindowId) => {
     setWindows((curr) => {
       const target = curr[id];
+
       if (!target.maximized) {
+        restoreSnapshotRef.current[id] = {
+          x: target.x,
+          y: target.y,
+          width: target.width,
+          height: target.height,
+        };
+
         return {
           ...curr,
           [id]: {
             ...target,
             maximized: true,
             x: 0,
-            y: 40,
+            y: TOPBAR_HEIGHT,
             width: window.innerWidth,
-            height: window.innerHeight - 96,
+            height: window.innerHeight - TOPBAR_HEIGHT - BOTTOM_GAP,
           },
         };
       }
+
+      const restore = restoreSnapshotRef.current[id];
       return {
         ...curr,
         [id]: {
           ...target,
           maximized: false,
-          width: 540,
-          height: 380,
-          x: 170,
-          y: 100,
+          x: restore?.x ?? target.x,
+          y: restore?.y ?? target.y,
+          width: restore?.width ?? target.width,
+          height: restore?.height ?? target.height,
         },
       };
     });
+
     bringToFront(id);
   };
 
@@ -212,8 +438,6 @@ export default function App() {
         return <SkillsWindow />;
       case "experience":
         return <ExperienceWindow />;
-      case "resume":
-        return <ResumeWindow />;
       case "contact":
         return <ContactWindow />;
       case "terminal":
@@ -223,48 +447,123 @@ export default function App() {
     }
   };
 
+  if (!bootDone) {
+    return <BootLoader onComplete={handleBootComplete} minDurationMs={2200} />;
+  }
+
   return (
     <main
       ref={desktopRef}
-      className="terminal-scanlines terminal-vignette relative h-screen w-full overflow-hidden bg-[#05070a]"
+      className={`terminal-scanlines terminal-vignette relative w-full bg-[#05070a] ${
+        isDesktop ? "h-screen overflow-hidden" : "min-h-screen overflow-y-auto"
+      }`}
     >
-      {/* grid background */}
-      <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(74,222,128,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(74,222,128,0.07)_1px,transparent_1px)] [background-size:24px_24px]" />
-      {/* green glow blob */}
-      <div className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl" />
+      <div className="animate-[fadeIn_.35s_ease-out]">
+        {/* grid background */}
+        <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(74,222,128,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(74,222,128,0.07)_1px,transparent_1px)] [background-size:24px_24px]" />
+        {/* green glow blob */}
+        <div className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl" />
 
-      <TopBar focusedTitle={focused?.title} onExportPdf={handleExportPdf} />
+        <TopBar
+          focusedTitle={focused?.title}
+          onExportPdf={handleExportPdf}
+          exportingPdf={isExportingPdf}
+          layoutMode={layoutMode}
+          onToggleLayoutMode={() =>
+            setLayoutMode((m) => (m === "tiling" ? "floating" : "tiling"))
+          }
+        />
 
-      {isDesktop && (
-        <section className="relative z-10 grid grid-cols-2 gap-2 px-4 pt-14 sm:grid-cols-4 md:w-[460px]">
-          {appDefinitions.map((app) => (
-            <DesktopIcon key={app.id} app={app} onOpen={openWindow} />
-          ))}
-        </section>
-      )}
+        {/*<div className="relative z-30 px-4 pt-12">
+        <button
+          onClick={() =>
+            setLayoutMode((m) => (m === "tiling" ? "floating" : "tiling"))
+          }
+          className="rounded border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-[11px] uppercase tracking-wider text-emerald-200 hover:bg-emerald-400/20"
+        >
+          Mode: {layoutMode === "tiling" ? "Tiling" : "Floating"}
+        </button>
+      </div>*/}
 
-      <section
-        className={`relative z-20 ${isDesktop ? "" : "px-3 pb-24 pt-14"}`}
-      >
-        {Object.values(windows).map((win) => (
-          <WindowFrame
-            key={win.id}
-            win={win}
-            mobileMode={!isDesktop}
-            isFocused={focused?.id === win.id}
-            onFocus={bringToFront}
-            onClose={closeWindow}
-            onMinimize={minimizeWindow}
-            onToggleMaximize={toggleMaximize}
-            onDragStop={onDragStop}
-            onResizeStop={onResizeStop}
+        {isDesktop && layoutMode === "floating" && (
+          <section className="relative z-10 grid grid-cols-2 gap-2 px-4 pt-14 sm:grid-cols-4 md:w-[460px]">
+            {appDefinitions.map((app) => (
+              <DesktopIcon key={app.id} app={app} onOpen={openWindow} />
+            ))}
+          </section>
+        )}
+
+        {isDesktop && layoutMode === "tiling" ? (
+          <section
+            className="relative z-20 overflow-y-auto px-4 pb-24"
+            style={{
+              marginTop: TOPBAR_HEIGHT,
+              height: `calc(100vh - ${TOPBAR_HEIGHT}px)`,
+            }}
           >
-            {renderContent(win.id)}
-          </WindowFrame>
-        ))}
-      </section>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleTileDragEnd}
+            >
+              <SortableContext items={tileOrder} strategy={rectSortingStrategy}>
+                <div className="tile-grid-dense min-h-0">
+                  {tileOrder.map((id) => (
+                    <SortableTileCard
+                      key={id}
+                      id={id}
+                      title={initialWindows[id].title}
+                      className={tileAreaClass[id]}
+                    >
+                      {renderContent(id)}
+                    </SortableTileCard>
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          </section>
+        ) : (
+          <section
+            className={`relative z-20 ${isDesktop ? "" : "px-3 pb-28"}`}
+            style={{ marginTop: TOPBAR_HEIGHT }}
+          >
+            {Object.values(windows).map((win) => (
+              <WindowFrame
+                key={win.id}
+                win={win}
+                mobileMode={!isDesktop}
+                isFocused={focused?.id === win.id}
+                onFocus={bringToFront}
+                onClose={closeWindow}
+                onMinimize={minimizeWindow}
+                onToggleMaximize={toggleMaximize}
+                onDragStop={onDragStop}
+                onResizeStop={onResizeStop}
+              >
+                {renderContent(win.id)}
+              </WindowFrame>
+            ))}
+          </section>
+        )}
 
-      {isDesktop && <Dock onOpen={openWindow} />}
+        {isDesktop && layoutMode === "floating" && <Dock onOpen={openWindow} />}
+
+        <div
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            left: "-20000px",
+            top: 0,
+            opacity: 1,
+            pointerEvents: "none",
+            zIndex: -1,
+          }}
+        >
+          <div ref={pdfRef}>
+            <PdfExportLayout />
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

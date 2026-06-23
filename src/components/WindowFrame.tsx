@@ -111,7 +111,7 @@ export default function WindowFrame({
       </div>
 
       <div
-        className={`h-[calc(100%-40px)] overflow-auto p-4 ${isFocused ? "opacity-100" : "opacity-85"}`}
+        className={`h-[calc(100%-40px)] overflow-auto p-5 ${isFocused ? "opacity-100" : "opacity-85"}`}
       >
         {children}
       </div>

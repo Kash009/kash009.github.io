@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { exportElementToPdf } from "./utils/exportPdf";
+import { useMediaQuery } from "./hooks/useMediaQuery";
+
 import DesktopIcon from "./components/DesktopIcon";
 import Dock from "./components/Dock";
 import TopBar from "./components/TopBar";
@@ -21,10 +24,10 @@ const initialWindows: Record<WindowId, WindowState> = {
     minimized: false,
     maximized: false,
     z: 2,
-    x: 90,
-    y: 80,
-    width: 460,
-    height: 340,
+    x: 40,
+    y: 64,
+    width: 360,
+    height: 260,
   },
   projects: {
     id: "projects",
@@ -33,58 +36,58 @@ const initialWindows: Record<WindowId, WindowState> = {
     minimized: false,
     maximized: false,
     z: 3,
-    x: 320,
-    y: 110,
-    width: 580,
-    height: 420,
+    x: 420,
+    y: 64,
+    width: 560,
+    height: 320,
   },
   skills: {
     id: "skills",
     title: "Skills",
-    isOpen: false,
+    isOpen: true,
     minimized: false,
     maximized: false,
-    z: 1,
-    x: 250,
-    y: 130,
-    width: 460,
-    height: 360,
+    z: 4,
+    x: 40,
+    y: 340,
+    width: 420,
+    height: 260,
   },
   experience: {
     id: "experience",
     title: "Experience",
-    isOpen: false,
+    isOpen: true,
     minimized: false,
     maximized: false,
-    z: 1,
-    x: 430,
-    y: 95,
-    width: 540,
-    height: 400,
+    z: 5,
+    x: 480,
+    y: 400,
+    width: 500,
+    height: 280,
   },
   resume: {
     id: "resume",
     title: "Resume",
-    isOpen: false,
+    isOpen: true,
     minimized: false,
     maximized: false,
-    z: 1,
-    x: 300,
-    y: 140,
-    width: 440,
-    height: 280,
+    z: 6,
+    x: 1000,
+    y: 64,
+    width: 300,
+    height: 210,
   },
   contact: {
     id: "contact",
     title: "Contact",
-    isOpen: false,
+    isOpen: true,
     minimized: false,
     maximized: false,
-    z: 1,
-    x: 500,
-    y: 150,
-    width: 420,
-    height: 300,
+    z: 7,
+    x: 1000,
+    y: 290,
+    width: 300,
+    height: 180,
   },
   terminal: {
     id: "terminal",
@@ -92,15 +95,26 @@ const initialWindows: Record<WindowId, WindowState> = {
     isOpen: true,
     minimized: false,
     maximized: false,
-    z: 4,
-    x: 170,
-    y: 180,
-    width: 620,
-    height: 320,
+    z: 8,
+    x: 1000,
+    y: 484,
+    width: 300,
+    height: 200,
   },
 };
 
 export default function App() {
+  const desktopRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+
+  const handleExportPdf = async () => {
+    if (!desktopRef.current) return;
+    await exportElementToPdf(desktopRef.current, {
+      fileName: "kashif-ai-engineer-portfolio.pdf",
+      scale: 2,
+    });
+  };
+
   const [windows, setWindows] =
     useState<Record<WindowId, WindowState>>(initialWindows);
   const [zCounter, setZCounter] = useState(10);
@@ -210,25 +224,33 @@ export default function App() {
   };
 
   return (
-    <main className="terminal-scanlines terminal-vignette relative h-screen w-full overflow-hidden bg-[#05070a]">
+    <main
+      ref={desktopRef}
+      className="terminal-scanlines terminal-vignette relative h-screen w-full overflow-hidden bg-[#05070a]"
+    >
       {/* grid background */}
       <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(74,222,128,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(74,222,128,0.07)_1px,transparent_1px)] [background-size:24px_24px]" />
       {/* green glow blob */}
       <div className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl" />
 
-      <TopBar focusedTitle={focused?.title} />
+      <TopBar focusedTitle={focused?.title} onExportPdf={handleExportPdf} />
 
-      <section className="relative z-10 grid grid-cols-2 gap-2 px-4 pt-14 sm:grid-cols-4 md:w-[460px]">
-        {appDefinitions.map((app) => (
-          <DesktopIcon key={app.id} app={app} onOpen={openWindow} />
-        ))}
-      </section>
+      {isDesktop && (
+        <section className="relative z-10 grid grid-cols-2 gap-2 px-4 pt-14 sm:grid-cols-4 md:w-[460px]">
+          {appDefinitions.map((app) => (
+            <DesktopIcon key={app.id} app={app} onOpen={openWindow} />
+          ))}
+        </section>
+      )}
 
-      <section className="relative z-20">
+      <section
+        className={`relative z-20 ${isDesktop ? "" : "px-3 pb-24 pt-14"}`}
+      >
         {Object.values(windows).map((win) => (
           <WindowFrame
             key={win.id}
             win={win}
+            mobileMode={!isDesktop}
             isFocused={focused?.id === win.id}
             onFocus={bringToFront}
             onClose={closeWindow}
@@ -242,7 +264,7 @@ export default function App() {
         ))}
       </section>
 
-      <Dock onOpen={openWindow} />
+      {isDesktop && <Dock onOpen={openWindow} />}
     </main>
   );
 }

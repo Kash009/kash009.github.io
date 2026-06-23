@@ -6,6 +6,7 @@ import { WindowState } from "../types";
 type Props = {
   win: WindowState;
   isFocused: boolean;
+  mobileMode?: boolean;
   onFocus: (id: WindowState["id"]) => void;
   onClose: (id: WindowState["id"]) => void;
   onMinimize: (id: WindowState["id"]) => void;
@@ -24,6 +25,7 @@ type Props = {
 export default function WindowFrame({
   win,
   isFocused,
+  mobileMode = false,
   onFocus,
   onClose,
   onMinimize,
@@ -33,6 +35,29 @@ export default function WindowFrame({
   children,
 }: Props) {
   if (!win.isOpen || win.minimized) return null;
+
+  // Mobile/tablet: stacked cards, no drag/resize
+  if (mobileMode) {
+    return (
+      <article className="glow-border mb-3 overflow-hidden rounded-md bg-[#070d12]/92">
+        <div className="flex h-10 items-center justify-between border-b border-emerald-400/20 bg-[#091118] px-3">
+          <div className="text-xs uppercase tracking-wider text-emerald-300/90">
+            {win.title}.sys
+          </div>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => onClose(win.id)}
+              className="grid h-6 w-6 place-items-center rounded border border-rose-400/40 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20"
+              aria-label={`Close ${win.title}`}
+            >
+              <X size={13} />
+            </button>
+          </div>
+        </div>
+        <div className="max-h-[60vh] overflow-auto p-4">{children}</div>
+      </article>
+    );
+  }
 
   const dragStop: RndDragCallback = (_e, d) => onDragStop(win.id, d.x, d.y);
 

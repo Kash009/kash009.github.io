@@ -79,3 +79,11 @@ body {
         inset 0 0 0 1px rgba(74, 222, 128, 0.06),
         0 0 30px rgba(16, 185, 129, 0.08);
 }
+
+@media (max-width: 1023px) {
+    html,
+    body,
+    #root {
+        overflow: auto;
+    }
+}

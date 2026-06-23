@@ -37,34 +37,32 @@
 
 :root[data-theme="light"] {
     color-scheme: light;
-    --bg: #f4f7fb;
+    --bg: #f3f7fc;
     --panel: #ffffff;
-    --panel-2: #eef3f9;
-    --line: rgba(16, 185, 129, 0.28);
-    --line-strong: rgba(16, 185, 129, 0.45);
-    /*--text: #0f172a;*/
-    /*--muted: #334155;*/
+    --panel-2: #e8eff7;
+    --line: rgba(15, 118, 110, 0.38);
+    --line-strong: rgba(15, 118, 110, 0.58);
 
-    --accent: #0f766e; /* teal-700, much cleaner on light bg */
-    --accent-strong: #115e59; /* teal-800 */
-    --text: #0f172a;
-    --muted: #475569;
+    --accent: #0f766e;
+    --accent-strong: #115e59;
+    --text: #0b1220;
+    --muted: #334155;
 
     --bg-gradient:
         radial-gradient(
             1200px 600px at 15% -10%,
-            rgba(16, 185, 129, 0.1),
+            rgba(16, 185, 129, 0.11),
             transparent 58%
         ),
         radial-gradient(
             1000px 500px at 90% 0%,
-            rgba(14, 165, 233, 0.08),
+            rgba(14, 165, 233, 0.09),
             transparent 54%
         ),
-        linear-gradient(180deg, #f8fbff 0%, #eef5ff 55%, #eaf3ff 100%);
+        linear-gradient(180deg, #f4f8fe 0%, #eaf2fb 55%, #e3edf8 100%);
 
-    --surface-tint-1: rgba(15, 118, 110, 0.06);
-    --surface-tint-2: rgba(15, 118, 110, 0.1);
+    --surface-tint-1: rgba(15, 118, 110, 0.09);
+    --surface-tint-2: rgba(15, 118, 110, 0.14);
 }
 
 html,
@@ -93,6 +91,14 @@ body,
     border-radius: 999px;
 }
 
+:root[data-theme="light"] * {
+    scrollbar-color: rgba(15, 118, 110, 0.35) transparent;
+}
+
+:root[data-theme="light"] *::-webkit-scrollbar-thumb {
+    background: rgba(15, 118, 110, 0.35);
+}
+
 body {
     font-family:
         "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace,
@@ -115,6 +121,16 @@ body {
     );
 }
 
+:root[data-theme="light"] .terminal-scanlines::before {
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(15, 118, 110, 0.025) 0px,
+        rgba(15, 118, 110, 0.025) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+}
+
 /* vignette */
 .terminal-vignette::after {
     content: "";
@@ -128,12 +144,26 @@ body {
     );
 }
 
+:root[data-theme="light"] .terminal-vignette::after {
+    background: radial-gradient(
+        circle at center,
+        transparent 52%,
+        rgba(15, 23, 42, 0.12) 100%
+    );
+}
+
 /* thin glowing border */
 .glow-border {
     border: 1px solid var(--line);
     box-shadow:
         inset 0 0 0 1px rgba(74, 222, 128, 0.06),
         0 0 30px rgba(16, 185, 129, 0.08);
+}
+
+:root[data-theme="light"] .glow-border {
+    box-shadow:
+        inset 0 0 0 1px rgba(15, 118, 110, 0.08),
+        0 6px 24px rgba(15, 118, 110, 0.1);
 }
 
 @media (max-width: 1023px) {
@@ -317,6 +347,15 @@ body {
 .pdf-icon-fix svg {
     display: block;
     vertical-align: middle;
+}
+
+.desktop-icon:hover {
+    border-color: var(--line) !important;
+    background: var(--surface-tint-1);
+}
+
+.dock-button:hover {
+    background: var(--surface-tint-2) !important;
 }
 
 @keyframes fadeIn {

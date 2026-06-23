@@ -189,7 +189,10 @@ function TiledCard({
   dragHandleProps?: React.HTMLAttributes<HTMLButtonElement>;
 }) {
   return (
-    <article className="glow-border flex h-full min-h-0 flex-col overflow-hidden rounded-md bg-[#070d12]/92">
+    <article
+      className="glow-border flex h-full min-h-0 flex-col overflow-hidden rounded-md"
+      style={{ background: "var(--panel)" }}
+    >
       <header
         className="flex h-10 shrink-0 items-center justify-between px-3"
         style={{
@@ -206,7 +209,12 @@ function TiledCard({
 
         <button
           {...dragHandleProps}
-          className="cursor-grab active:cursor-grabbing rounded border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[10px] uppercase tracking-wider text-emerald-200 hover:bg-emerald-400/20"
+          className="cursor-grab active:cursor-grabbing rounded border px-2 py-1 text-[10px] uppercase tracking-wider"
+          style={{
+            borderColor: "var(--line)",
+            background: "var(--surface-tint-2)",
+            color: "var(--text)",
+          }}
           title="Drag to reorder tile"
         >
           Move

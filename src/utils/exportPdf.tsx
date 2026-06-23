@@ -1,132 +1,511 @@
-import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-type ExportOptions = {
-  fileName?: string;
-  scale?: number;
-  backgroundColor?: string;
+type Profile = {
+  name: string;
+  role: string;
+  tagline?: string;
+  location: string;
+  phone?: string;
+  email: string;
+  github?: string;
+  codeberg?: string;
+  linkedin?: string;
 };
 
-export async function exportElementToPdf(
-  element: HTMLElement,
-  options: ExportOptions = {},
+type Project = { name: string; summary: string; stack?: string[] };
+type Job = {
+  company: string;
+  role: string;
+  location?: string;
+  period: string;
+  points: string[];
+};
+type Education = { school: string; degree: string; period: string };
+type Product = { name: string; company: string; summary: string };
+type StackGroup = { title: string; items: string[] };
+type ExpertiseItem = { label: string };
+type StrengthItem = { label: string };
+
+type SimplePortfolioData = {
+  profile: Profile;
+  professionalSummary?: string;
+  expertise?: ExpertiseItem[];
+  stack?: StackGroup[];
+  projects?: Project[];
+  productsLeadership?: Product[];
+  experience?: Job[];
+  leadershipStrengths?: StrengthItem[];
+  education?: Education[];
+  certs?: string[];
+};
+
+const PAGE = { w: 210, h: 297, m: 12 };
+const CONTENT_W = PAGE.w - PAGE.m * 2;
+
+const FONT = {
+  section: 12,
+  subheading: 10,
+  body: 10,
+  small: 9,
+};
+
+const SP = {
+  sectionTop: 7,
+  sectionBottom: 4,
+  rowGap: 3,
+  line: 4.8,
+  boxPadX: 3,
+  boxPadY: 3,
+};
+
+function wrap(pdf: jsPDF, text: string, maxW: number) {
+  return pdf.splitTextToSize(text, maxW) as string[];
+}
+
+function ensurePage(pdf: jsPDF, y: number, needed = 12) {
+  if (y + needed > PAGE.h - PAGE.m) {
+    pdf.addPage();
+    return PAGE.m;
+  }
+  return y;
+}
+
+function setFont(pdf: jsPDF, size: number, bold = false) {
+  pdf.setFont("helvetica", bold ? "bold" : "normal");
+  pdf.setFontSize(size);
+}
+
+function drawSectionHeading(pdf: jsPDF, title: string, y: number) {
+  y = ensurePage(pdf, y, 12);
+  y += SP.sectionTop;
+
+  setFont(pdf, FONT.section, true);
+  pdf.text(title, PAGE.m, y);
+
+  y += 2;
+  pdf.setLineWidth(0.25);
+  pdf.line(PAGE.m, y, PAGE.w - PAGE.m, y);
+
+  return y + 4;
+}
+
+function drawBox(pdf: jsPDF, yTop: number, h: number) {
+  pdf.setLineWidth(0.2);
+  pdf.roundedRect(PAGE.m, yTop, CONTENT_W, h, 1.2, 1.2, "S");
+}
+
+function drawWrappedText(
+  pdf: jsPDF,
+  lines: string[],
+  x: number,
+  y: number,
+  lineH = SP.line,
 ) {
-  const {
-    fileName = "ai-engineer-portfolio.pdf",
-    scale = 2,
-    backgroundColor = "#05070a",
-  } = options;
+  lines.forEach((line, i) => pdf.text(line, x, y + i * lineH));
+  return y + lines.length * lineH;
+}
 
+function drawBulletLines(
+  pdf: jsPDF,
+  items: string[],
+  x: number,
+  y: number,
+  maxW: number,
+) {
+  let cy = y;
+  for (const item of items) {
+    const lines = wrap(pdf, item, maxW - 4);
+    pdf.text("•", x, cy);
+    cy = drawWrappedText(pdf, lines, x + 4, cy);
+  }
+  return cy;
+}
+
+function calcLinesForBullets(pdf: jsPDF, items: string[], maxW: number) {
+  let count = 0;
+  for (const item of items) count += wrap(pdf, item, maxW - 4).length;
+  return count;
+}
+
+function drawRowBox(
+  pdf: jsPDF,
+  y: number,
+  render: (contentY: number) => void,
+  estimatedLines: number,
+) {
+  const h = SP.boxPadY * 2 + estimatedLines * SP.line + 1;
+  y = ensurePage(pdf, y, h + SP.rowGap);
+  drawBox(pdf, y, h);
+  render(y + SP.boxPadY + 1);
+  return y + h + SP.rowGap;
+}
+
+export function exportSimplePortfolioPdf(
+  data: SimplePortfolioData,
+  fileName = "portfolio.pdf",
+) {
   const pdf = new jsPDF("p", "mm", "a4");
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
+  let y = PAGE.m;
 
-  const margin = 8;
-  const gap = 4;
-  const usableWidthMm = pageWidth - margin * 2;
-  const usableHeightMm = pageHeight - margin * 2;
+  // PROFILE
+  y = drawSectionHeading(pdf, "Profile", y);
+  y = drawRowBox(
+    pdf,
+    y,
+    (cy) => {
+      setFont(pdf, 13, true);
+      pdf.text(data.profile.name, PAGE.m + SP.boxPadX, cy);
+      cy += SP.line;
 
-  const sections = Array.from(element.children) as HTMLElement[];
-  let cursorYmm = margin;
-  let hasDrawnAnything = false;
-
-  for (const section of sections) {
-    const sectionCanvas = await html2canvas(section, {
-      scale,
-      useCORS: true,
-      backgroundColor,
-      logging: false,
-      windowWidth: section.scrollWidth,
-      windowHeight: section.scrollHeight,
-    });
-
-    // Convert mm->px at current fit ratio:
-    // full section width in px maps to usableWidthMm in pdf
-    const pxPerMm = sectionCanvas.width / usableWidthMm;
-
-    let sourceYpx = 0;
-    const totalHeightPx = sectionCanvas.height;
-
-    while (sourceYpx < totalHeightPx) {
-      // remaining vertical space on current pdf page in mm
-      const remainingMm = pageHeight - margin - cursorYmm;
-
-      // if no room, add new page
-      if (remainingMm <= 1) {
-        pdf.addPage();
-        cursorYmm = margin;
-      }
-
-      // convert remaining drawable mm to px in source canvas
-      const sliceHeightPx = Math.min(
-        Math.floor((pageHeight - margin - cursorYmm) * pxPerMm),
-        totalHeightPx - sourceYpx,
+      setFont(pdf, FONT.body, false);
+      cy = drawWrappedText(
+        pdf,
+        wrap(pdf, data.profile.role, CONTENT_W - SP.boxPadX * 2),
+        PAGE.m + SP.boxPadX,
+        cy,
       );
 
-      // safety: if still zero, new page
-      if (sliceHeightPx <= 0) {
-        pdf.addPage();
-        cursorYmm = margin;
-        continue;
-      }
-
-      // create slice canvas
-      const sliceCanvas = document.createElement("canvas");
-      sliceCanvas.width = sectionCanvas.width;
-      sliceCanvas.height = sliceHeightPx;
-
-      const ctx = sliceCanvas.getContext("2d");
-      if (!ctx) throw new Error("Failed to create canvas context");
-
-      ctx.drawImage(
-        sectionCanvas,
-        0,
-        sourceYpx,
-        sectionCanvas.width,
-        sliceHeightPx,
-        0,
-        0,
-        sectionCanvas.width,
-        sliceHeightPx,
+      const contact = `${data.profile.location} | ${data.profile.email}${
+        data.profile.phone ? ` | ${data.profile.phone}` : ""
+      }`;
+      cy = drawWrappedText(
+        pdf,
+        wrap(pdf, contact, CONTENT_W - SP.boxPadX * 2),
+        PAGE.m + SP.boxPadX,
+        cy,
       );
 
-      const sliceData = sliceCanvas.toDataURL("image/png", 1.0);
-
-      const sliceHeightMm = sliceHeightPx / pxPerMm;
-
-      pdf.addImage(
-        sliceData,
-        "PNG",
-        margin,
-        cursorYmm,
-        usableWidthMm,
-        sliceHeightMm,
-        undefined,
-        "FAST",
-      );
-
-      hasDrawnAnything = true;
-      sourceYpx += sliceHeightPx;
-      cursorYmm += sliceHeightMm;
-
-      // if this section continues, force next page (cleaner than splitting with tiny leftover)
-      if (sourceYpx < totalHeightPx) {
-        pdf.addPage();
-        cursorYmm = margin;
+      const links = [
+        data.profile.github,
+        data.profile.codeberg,
+        data.profile.linkedin,
+      ]
+        .filter(Boolean)
+        .join(" | ");
+      if (links) {
+        drawWrappedText(
+          pdf,
+          wrap(pdf, links, CONTENT_W - SP.boxPadX * 2),
+          PAGE.m + SP.boxPadX,
+          cy,
+        );
       }
-    }
+    },
+    6,
+  );
 
-    // gap after each finished section
-    cursorYmm += gap;
+  // PROFESSIONAL SUMMARY
+  if (data.professionalSummary) {
+    y = drawSectionHeading(pdf, "Professional Summary", y);
+    const lines = wrap(
+      pdf,
+      data.professionalSummary,
+      CONTENT_W - SP.boxPadX * 2,
+    );
+    y = drawRowBox(
+      pdf,
+      y,
+      (cy) => {
+        setFont(pdf, FONT.body, false);
+        drawWrappedText(pdf, lines, PAGE.m + SP.boxPadX, cy);
+      },
+      lines.length,
+    );
+  }
 
-    // if gap overflow, start next page
-    if (cursorYmm > pageHeight - margin) {
-      pdf.addPage();
-      cursorYmm = margin;
+  // CORE EXPERTISE
+  if (data.expertise?.length) {
+    y = drawSectionHeading(pdf, "Core Expertise", y);
+    const bullets = data.expertise.map((e) => e.label);
+    const lines = calcLinesForBullets(pdf, bullets, CONTENT_W - SP.boxPadX * 2);
+    y = drawRowBox(
+      pdf,
+      y,
+      (cy) => {
+        setFont(pdf, FONT.body, false);
+        drawBulletLines(
+          pdf,
+          bullets,
+          PAGE.m + SP.boxPadX,
+          cy,
+          CONTENT_W - SP.boxPadX * 2,
+        );
+      },
+      lines,
+    );
+  }
+
+  // TECHNICAL STACK
+  if (data.stack?.length) {
+    y = drawSectionHeading(pdf, "Technical Stack", y);
+    for (const group of data.stack) {
+      const titleLines = wrap(
+        pdf,
+        group.title,
+        CONTENT_W - SP.boxPadX * 2,
+      ).length;
+      const itemLines = calcLinesForBullets(
+        pdf,
+        group.items,
+        CONTENT_W - SP.boxPadX * 2 - 4,
+      );
+      const estimate = titleLines + itemLines + 1;
+
+      y = drawRowBox(
+        pdf,
+        y,
+        (cy) => {
+          setFont(pdf, FONT.subheading, true);
+          cy = drawWrappedText(
+            pdf,
+            wrap(pdf, group.title, CONTENT_W - SP.boxPadX * 2),
+            PAGE.m + SP.boxPadX,
+            cy,
+          );
+
+          setFont(pdf, FONT.body, false);
+          drawBulletLines(
+            pdf,
+            group.items,
+            PAGE.m + SP.boxPadX + 4,
+            cy,
+            CONTENT_W - SP.boxPadX * 2 - 4,
+          );
+        },
+        estimate,
+      );
     }
   }
 
-  if (hasDrawnAnything) {
-    pdf.save(fileName);
+  // EXPERIENCE
+  if (data.experience?.length) {
+    y = drawSectionHeading(pdf, "Experience", y);
+    for (const job of data.experience) {
+      const head = `${job.role} — ${job.company}`;
+      const meta = `${job.location ? `${job.location} | ` : ""}${job.period}`;
+      const headLines = wrap(pdf, head, CONTENT_W - SP.boxPadX * 2).length;
+      const metaLines = wrap(pdf, meta, CONTENT_W - SP.boxPadX * 2).length;
+      const pointLines = calcLinesForBullets(
+        pdf,
+        job.points,
+        CONTENT_W - SP.boxPadX * 2 - 4,
+      );
+
+      y = drawRowBox(
+        pdf,
+        y,
+        (cy) => {
+          setFont(pdf, FONT.subheading, true);
+          cy = drawWrappedText(
+            pdf,
+            wrap(pdf, head, CONTENT_W - SP.boxPadX * 2),
+            PAGE.m + SP.boxPadX,
+            cy,
+          );
+
+          setFont(pdf, FONT.small, false);
+          cy = drawWrappedText(
+            pdf,
+            wrap(pdf, meta, CONTENT_W - SP.boxPadX * 2),
+            PAGE.m + SP.boxPadX,
+            cy,
+          );
+
+          setFont(pdf, FONT.body, false);
+          drawBulletLines(
+            pdf,
+            job.points,
+            PAGE.m + SP.boxPadX + 4,
+            cy,
+            CONTENT_W - SP.boxPadX * 2 - 4,
+          );
+        },
+        headLines + metaLines + pointLines + 1,
+      );
+    }
   }
+
+  // PROJECTS
+  if (data.projects?.length) {
+    y = drawSectionHeading(pdf, "Selected Research & Engineering Projects", y);
+    for (const p of data.projects) {
+      const titleLines = wrap(pdf, p.name, CONTENT_W - SP.boxPadX * 2).length;
+      const summaryLines = wrap(
+        pdf,
+        p.summary,
+        CONTENT_W - SP.boxPadX * 2 - 4,
+      ).length;
+      const stackText = p.stack?.length ? `Stack: ${p.stack.join(", ")}` : "";
+      const stackLines = stackText
+        ? wrap(pdf, stackText, CONTENT_W - SP.boxPadX * 2 - 4).length
+        : 0;
+
+      y = drawRowBox(
+        pdf,
+        y,
+        (cy) => {
+          setFont(pdf, FONT.subheading, true);
+          cy = drawWrappedText(
+            pdf,
+            wrap(pdf, p.name, CONTENT_W - SP.boxPadX * 2),
+            PAGE.m + SP.boxPadX,
+            cy,
+          );
+
+          setFont(pdf, FONT.body, false);
+          cy = drawBulletLines(
+            pdf,
+            [p.summary],
+            PAGE.m + SP.boxPadX + 4,
+            cy,
+            CONTENT_W - SP.boxPadX * 2 - 4,
+          );
+
+          if (stackText) {
+            drawBulletLines(
+              pdf,
+              [stackText],
+              PAGE.m + SP.boxPadX + 4,
+              cy,
+              CONTENT_W - SP.boxPadX * 2 - 4,
+            );
+          }
+        },
+        titleLines + summaryLines + stackLines + 1,
+      );
+    }
+  }
+
+  // PRODUCTS & LEADERSHIP
+  if (data.productsLeadership?.length) {
+    y = drawSectionHeading(pdf, "Selected Products & Leadership", y);
+    for (const p of data.productsLeadership) {
+      const title = `${p.name} — ${p.company}`;
+      const titleLines = wrap(pdf, title, CONTENT_W - SP.boxPadX * 2).length;
+      const summaryLines = wrap(
+        pdf,
+        p.summary,
+        CONTENT_W - SP.boxPadX * 2 - 4,
+      ).length;
+
+      y = drawRowBox(
+        pdf,
+        y,
+        (cy) => {
+          setFont(pdf, FONT.subheading, true);
+          cy = drawWrappedText(
+            pdf,
+            wrap(pdf, title, CONTENT_W - SP.boxPadX * 2),
+            PAGE.m + SP.boxPadX,
+            cy,
+          );
+
+          setFont(pdf, FONT.body, false);
+          drawBulletLines(
+            pdf,
+            [p.summary],
+            PAGE.m + SP.boxPadX + 4,
+            cy,
+            CONTENT_W - SP.boxPadX * 2 - 4,
+          );
+        },
+        titleLines + summaryLines + 1,
+      );
+    }
+  }
+
+  // LEADERSHIP STRENGTHS
+  if (data.leadershipStrengths?.length) {
+    y = drawSectionHeading(pdf, "Leadership Strengths", y);
+    const bullets = data.leadershipStrengths.map((s) => s.label);
+    const lines = calcLinesForBullets(pdf, bullets, CONTENT_W - SP.boxPadX * 2);
+    y = drawRowBox(
+      pdf,
+      y,
+      (cy) => {
+        setFont(pdf, FONT.body, false);
+        drawBulletLines(
+          pdf,
+          bullets,
+          PAGE.m + SP.boxPadX,
+          cy,
+          CONTENT_W - SP.boxPadX * 2,
+        );
+      },
+      lines,
+    );
+  }
+
+  // EDUCATION
+  if (data.education?.length) {
+    y = drawSectionHeading(pdf, "Education", y);
+    for (const e of data.education) {
+      const degreeLines = wrap(
+        pdf,
+        e.degree,
+        CONTENT_W - SP.boxPadX * 2,
+      ).length;
+      const meta = `${e.school} | ${e.period}`;
+      const metaLines = wrap(pdf, meta, CONTENT_W - SP.boxPadX * 2 - 4).length;
+
+      y = drawRowBox(
+        pdf,
+        y,
+        (cy) => {
+          setFont(pdf, FONT.subheading, true);
+          cy = drawWrappedText(
+            pdf,
+            wrap(pdf, e.degree, CONTENT_W - SP.boxPadX * 2),
+            PAGE.m + SP.boxPadX,
+            cy,
+          );
+
+          setFont(pdf, FONT.body, false);
+          drawBulletLines(
+            pdf,
+            [meta],
+            PAGE.m + SP.boxPadX + 4,
+            cy,
+            CONTENT_W - SP.boxPadX * 2 - 4,
+          );
+        },
+        degreeLines + metaLines + 1,
+      );
+    }
+  }
+
+  // CERTIFICATES
+  if (data.certs?.length) {
+    y = drawSectionHeading(pdf, "Certificates", y);
+    const lines = calcLinesForBullets(
+      pdf,
+      data.certs,
+      CONTENT_W - SP.boxPadX * 2,
+    );
+    y = drawRowBox(
+      pdf,
+      y,
+      (cy) => {
+        setFont(pdf, FONT.body, false);
+        drawBulletLines(
+          pdf,
+          data.certs!,
+          PAGE.m + SP.boxPadX,
+          cy,
+          CONTENT_W - SP.boxPadX * 2,
+        );
+      },
+      lines,
+    );
+  }
+
+  // page numbers
+  const total = pdf.getNumberOfPages();
+  setFont(pdf, 8, false);
+  for (let i = 1; i <= total; i++) {
+    pdf.setPage(i);
+    pdf.text(`Page ${i} of ${total}`, PAGE.w - PAGE.m - 18, PAGE.h - 4.5);
+  }
+
+  pdf.save(fileName);
 }

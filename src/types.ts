@@ -2,12 +2,15 @@ import { LucideIcon } from "lucide-react";
 
 export type WindowId =
   | "about"
-  | "projects"
-  | "skills"
-  | "experience"
-  | "resume"
-  | "contact"
-  | "terminal";
+  | "professionalSummary"
+  | "coreExpertise"
+  | "technicalStack"
+  | "selectedResearchEngineeringProjects"
+  | "selectedProductsLeadership"
+  | "leadershipStrengths"
+  | "education"
+  | "certificates"
+  | "experience";
 
 export type WindowState = {
   id: WindowId;

@@ -1,3 +1,4 @@
+// src/components/WindowFrame.tsx
 import { Rnd, RndDragCallback, RndResizeCallback } from "react-rnd";
 import { Minus, Square, X } from "lucide-react";
 import { ReactNode } from "react";
@@ -36,24 +37,39 @@ export default function WindowFrame({
 }: Props) {
   if (!win.isOpen || win.minimized) return null;
 
-  // Mobile/tablet: stacked cards, no drag/resize
   if (mobileMode) {
     return (
-      <article className="glow-border mb-3 overflow-hidden rounded-md bg-[#070d12]/92">
-        <div className="flex h-10 items-center justify-between border-b border-emerald-400/20 bg-[#091118] px-3">
-          <div className="text-xs uppercase tracking-wider text-emerald-300/90">
+      <article
+        className="glow-border mb-3 overflow-hidden rounded-md"
+        style={{ background: "var(--panel)" }}
+      >
+        <div
+          className="flex h-10 items-center justify-between px-3"
+          style={{
+            borderBottom: "1px solid var(--line)",
+            background: "var(--panel-2)",
+          }}
+        >
+          <div
+            className="text-xs uppercase tracking-wider"
+            style={{ color: "var(--accent)" }}
+          >
             {win.title}.sys
           </div>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => onClose(win.id)}
-              className="grid h-6 w-6 place-items-center rounded border border-rose-400/40 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20"
-              aria-label={`Close ${win.title}`}
-            >
-              <X size={13} />
-            </button>
-          </div>
+          <button
+            onClick={() => onClose(win.id)}
+            className="grid h-6 w-6 place-items-center rounded border"
+            style={{
+              borderColor: "var(--line)",
+              background: "var(--surface-tint-2)",
+              color: "var(--text)",
+            }}
+            aria-label={`Close ${win.title}`}
+          >
+            <X size={13} />
+          </button>
         </div>
+
         <div className="max-h-[60vh] overflow-auto p-4">{children}</div>
       </article>
     );
@@ -76,34 +92,63 @@ export default function WindowFrame({
       cancel=".window-controls,button,a,input,textarea"
       disableDragging={win.maximized}
       enableResizing={!win.maximized}
-      style={{ zIndex: win.z }}
+      style={{
+        zIndex: win.z,
+        background: "var(--panel)",
+      }}
       onDragStart={() => onFocus(win.id)}
       onMouseDown={() => onFocus(win.id)}
       onDragStop={dragStop}
       onResizeStop={resizeStop}
-      className="glow-border overflow-hidden rounded-md bg-[#070d12]/92 backdrop-blur-xl"
+      className="glow-border overflow-hidden rounded-md backdrop-blur-xl"
     >
-      <div className="window-drag-handle flex h-10 cursor-move items-center justify-between border-b border-emerald-400/20 bg-[#091118] px-3">
-        <div className="text-xs uppercase tracking-wider text-emerald-300/90">
+      <div
+        className="window-drag-handle flex h-10 cursor-move items-center justify-between px-3"
+        style={{
+          borderBottom: "1px solid var(--line)",
+          background: "var(--panel-2)",
+        }}
+      >
+        <div
+          className="text-xs uppercase tracking-wider"
+          style={{ color: "var(--accent)" }}
+        >
           {win.title}.sys
         </div>
 
         <div className="window-controls flex items-center gap-1.5">
           <button
             onClick={() => onMinimize(win.id)}
-            className="grid h-6 w-6 place-items-center rounded border border-emerald-400/20 bg-emerald-400/5 text-emerald-300 hover:bg-emerald-400/15"
+            className="grid h-6 w-6 place-items-center rounded border"
+            style={{
+              borderColor: "var(--line)",
+              background: "var(--surface-tint-2)",
+              color: "var(--text)",
+            }}
           >
             <Minus size={13} />
           </button>
+
           <button
             onClick={() => onToggleMaximize(win.id)}
-            className="grid h-6 w-6 place-items-center rounded border border-emerald-400/20 bg-emerald-400/5 text-emerald-300 hover:bg-emerald-400/15"
+            className="grid h-6 w-6 place-items-center rounded border"
+            style={{
+              borderColor: "var(--line)",
+              background: "var(--surface-tint-2)",
+              color: "var(--text)",
+            }}
           >
             <Square size={11} />
           </button>
+
           <button
             onClick={() => onClose(win.id)}
-            className="grid h-6 w-6 place-items-center rounded border border-rose-400/40 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20"
+            className="grid h-6 w-6 place-items-center rounded border"
+            style={{
+              borderColor: "var(--line)",
+              background: "var(--surface-tint-2)",
+              color: "var(--text)",
+            }}
           >
             <X size={13} />
           </button>
@@ -111,7 +156,9 @@ export default function WindowFrame({
       </div>
 
       <div
-        className={`h-[calc(100%-40px)] overflow-auto p-5 ${isFocused ? "opacity-100" : "opacity-85"}`}
+        className={`h-[calc(100%-40px)] overflow-auto p-5 ${
+          isFocused ? "opacity-100" : "opacity-85"
+        }`}
       >
         {children}
       </div>

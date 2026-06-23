@@ -1,9 +1,12 @@
+// src/components/TopBar.tsx
 type Props = {
   focusedTitle?: string;
   onExportPdf?: () => void;
   exportingPdf?: boolean;
   layoutMode: "tiling" | "floating";
   onToggleLayoutMode: () => void;
+  theme: "dark" | "light";
+  onToggleTheme: () => void;
 };
 
 export default function TopBar({
@@ -12,6 +15,8 @@ export default function TopBar({
   exportingPdf = false,
   layoutMode,
   onToggleLayoutMode,
+  theme,
+  onToggleTheme,
 }: Props) {
   const now = new Date();
   const time = now.toLocaleTimeString([], {
@@ -20,12 +25,21 @@ export default function TopBar({
   });
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[1000] flex h-10 items-center justify-between border-b border-emerald-400/20 bg-[#070b10]/85 px-4 backdrop-blur-xl">
-      <div className="text-xs uppercase tracking-[0.2em] text-emerald-300">
+    <header
+      className="fixed inset-x-0 top-0 z-[1000] flex h-10 items-center justify-between px-4 backdrop-blur-xl"
+      style={{
+        borderBottom: "1px solid var(--line)",
+        background: "var(--panel-2)",
+      }}
+    >
+      <div
+        className="text-xs uppercase tracking-[0.2em]"
+        style={{ color: "var(--accent)" }}
+      >
         Terminal OS
       </div>
 
-      <div className="text-xs text-emerald-200/80">
+      <div className="text-xs" style={{ color: "var(--muted)" }}>
         {focusedTitle
           ? `session://${focusedTitle.toLowerCase()}`
           : "session://desktop"}
@@ -33,8 +47,26 @@ export default function TopBar({
 
       <div className="flex items-center gap-2">
         <button
+          onClick={onToggleTheme}
+          className="rounded px-2 py-1 text-[10px] uppercase tracking-wider"
+          style={{
+            border: "1px solid var(--line)",
+            background: "var(--surface-tint-2)",
+            color: "var(--text)",
+          }}
+          title="Toggle theme"
+        >
+          {theme === "dark" ? "Light" : "Dark"}
+        </button>
+
+        <button
           onClick={onToggleLayoutMode}
-          className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[10px] uppercase tracking-wider text-emerald-200 hover:bg-emerald-400/20"
+          className="rounded px-2 py-1 text-[10px] uppercase tracking-wider"
+          style={{
+            border: "1px solid var(--line)",
+            background: "var(--surface-tint-2)",
+            color: "var(--text)",
+          }}
           title="Toggle layout mode"
         >
           {layoutMode === "tiling" ? "Tiling" : "Floating"}
@@ -43,12 +75,19 @@ export default function TopBar({
         <button
           onClick={onExportPdf}
           disabled={exportingPdf}
-          className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[10px] uppercase tracking-wider text-emerald-200 hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded px-2 py-1 text-[10px] uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-60"
+          style={{
+            border: "1px solid var(--line)",
+            background: "var(--surface-tint-2)",
+            color: "var(--text)",
+          }}
         >
           {exportingPdf ? "Exporting..." : "Export PDF"}
         </button>
 
-        <div className="text-xs text-emerald-300/90">{time}</div>
+        <div className="text-xs" style={{ color: "var(--muted)" }}>
+          {time}
+        </div>
       </div>
     </header>
   );

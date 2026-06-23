@@ -19,6 +19,27 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 import PdfExportLayout from "./components/PdfExportLayout";
+import { exportSimplePortfolioPdf } from "./utils/exportPdf";
+import {
+  profile,
+  expertise,
+  stack,
+  projects,
+  productsLeadership,
+  experience,
+  strengths,
+  education,
+  certs,
+} from "./data/content";
+
+import ProfessionalSummaryWindow from "./components/windows/ProfessionalSummaryWindow";
+import CoreExpertiseWindow from "./components/windows/CoreExpertiseWindow";
+import TechnicalStackWindow from "./components/windows/TechnicalStackWindow";
+import SelectedResearchEngineeringProjectsWindow from "./components/windows/SelectedResearchEngineeringProjectsWindow";
+import SelectedProductsLeadershipWindow from "./components/windows/SelectedProductsLeadershipWindow";
+import LeadershipStrengthsWindow from "./components/windows/LeadershipStrengthsWindow";
+import EducationWindow from "./components/windows/EducationWindow";
+import CertificatesWindow from "./components/windows/CertificatesWindow";
 
 import DesktopIcon from "./components/DesktopIcon";
 import BootLoader from "./components/BootLoader";
@@ -46,58 +67,46 @@ const initialWindows: Record<WindowId, WindowState> = {
     minimized: false,
     maximized: false,
     z: 2,
-    x: 28,
-    y: 56,
-    width: 420,
-    height: 300,
+    x: 210,
+    y: 64,
+    width: 360,
+    height: 260,
   },
-  terminal: {
-    id: "terminal",
-    title: "Terminal",
+  professionalSummary: {
+    id: "professionalSummary",
+    title: "Professional Summary",
     isOpen: true,
     minimized: false,
     maximized: false,
     z: 3,
-    x: 460,
-    y: 56,
-    width: 420,
-    height: 300,
+    x: 590,
+    y: 64,
+    width: 500,
+    height: 280,
   },
-  contact: {
-    id: "contact",
-    title: "Contact",
+  coreExpertise: {
+    id: "coreExpertise",
+    title: "Core Expertise",
     isOpen: true,
     minimized: false,
     maximized: false,
     z: 4,
-    x: 892,
-    y: 56,
-    width: 420,
-    height: 300,
+    x: 1110,
+    y: 64,
+    width: 430,
+    height: 280,
   },
-  skills: {
-    id: "skills",
-    title: "Skills",
+  technicalStack: {
+    id: "technicalStack",
+    title: "Technical Stack",
     isOpen: true,
     minimized: false,
     maximized: false,
     z: 5,
-    x: 28,
-    y: 370,
-    width: 420,
-    height: 340,
-  },
-  projects: {
-    id: "projects",
-    title: "Projects",
-    isOpen: true,
-    minimized: false,
-    maximized: false,
-    z: 6,
-    x: 460,
-    y: 370,
-    width: 420,
-    height: 340,
+    x: 210,
+    y: 360,
+    width: 520,
+    height: 320,
   },
   experience: {
     id: "experience",
@@ -105,22 +114,82 @@ const initialWindows: Record<WindowId, WindowState> = {
     isOpen: true,
     minimized: false,
     maximized: false,
-    z: 7,
-    x: 892,
-    y: 370,
-    width: 420,
+    z: 6,
+    x: 750,
+    y: 360,
+    width: 790,
     height: 340,
+  },
+  selectedResearchEngineeringProjects: {
+    id: "selectedResearchEngineeringProjects",
+    title: "Selected Research & Engineering Projects",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 7,
+    x: 210,
+    y: 720,
+    width: 660,
+    height: 320,
+  },
+  selectedProductsLeadership: {
+    id: "selectedProductsLeadership",
+    title: "Selected Products & Leadership",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 8,
+    x: 890,
+    y: 720,
+    width: 650,
+    height: 320,
+  },
+  leadershipStrengths: {
+    id: "leadershipStrengths",
+    title: "Leadership strengths",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 9,
+    x: 210,
+    y: 1060,
+    width: 430,
+    height: 260,
+  },
+  education: {
+    id: "education",
+    title: "Education",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 10,
+    x: 660,
+    y: 1060,
+    width: 430,
+    height: 260,
+  },
+  certificates: {
+    id: "certificates",
+    title: "Certificates",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 11,
+    x: 1110,
+    y: 1060,
+    width: 430,
+    height: 260,
   },
 };
 
-const tileSpanClass: Record<WindowId, string> = {
-  about: "col-span-12 lg:col-span-4",
-  terminal: "col-span-12 lg:col-span-4",
-  contact: "col-span-12 lg:col-span-4",
-  skills: "col-span-12 lg:col-span-4",
-  projects: "col-span-12 lg:col-span-8",
-  experience: "col-span-12 lg:col-span-8",
-};
+// const tileSpanClass: Record<WindowId, string> = {
+//   about: "col-span-12 lg:col-span-4",
+//   // terminal: "col-span-12 lg:col-span-4",
+//   contact: "col-span-12 lg:col-span-4",
+//   skills: "col-span-12 lg:col-span-4",
+//   projects: "col-span-12 lg:col-span-8",
+//   experience: "col-span-12 lg:col-span-8",
+// };
 
 function TiledCard({
   title,
@@ -133,8 +202,17 @@ function TiledCard({
 }) {
   return (
     <article className="glow-border flex h-full min-h-0 flex-col overflow-hidden rounded-md bg-[#070d12]/92">
-      <header className="flex h-10 shrink-0 items-center justify-between border-b border-emerald-400/20 bg-[#091118] px-3">
-        <span className="text-xs uppercase tracking-wider text-emerald-300/90">
+      <header
+        className="flex h-10 shrink-0 items-center justify-between px-3"
+        style={{
+          borderBottom: "1px solid var(--line)",
+          background: "var(--panel-2)",
+        }}
+      >
+        <span
+          className="text-xs uppercase tracking-wider"
+          style={{ color: "var(--accent)" }}
+        >
           {title}.sys
         </span>
 
@@ -204,22 +282,39 @@ export default function App() {
   const [swapSource, setSwapSource] = useState<WindowId | null>(null);
   const [tileOrder, setTileOrder] = useState<WindowId[]>([
     "about",
-    "terminal",
-    "contact",
-    "skills",
-    "projects",
+    "professionalSummary",
+    "coreExpertise",
+    "technicalStack",
     "experience",
-    // "resume",
+    "selectedResearchEngineeringProjects",
+    "selectedProductsLeadership",
+    "leadershipStrengths",
+    "education",
+    "certificates",
   ]);
 
   const tileAreaClass: Record<WindowId, string> = {
     about: "tile-about",
-    terminal: "tile-terminal",
-    contact: "tile-contact",
-    skills: "tile-skills",
-    projects: "tile-projects",
+    professionalSummary: "tile-summary",
+    coreExpertise: "tile-core",
+    technicalStack: "tile-stack",
     experience: "tile-experience",
+    selectedResearchEngineeringProjects: "tile-research",
+    selectedProductsLeadership: "tile-products",
+    leadershipStrengths: "tile-leadership",
+    education: "tile-education",
+    certificates: "tile-certificates",
   };
+
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("theme");
+    return saved === "light" ? "light" : "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     const seen = sessionStorage.getItem("bootSeen");
@@ -316,15 +411,25 @@ export default function App() {
   };
 
   const handleExportPdf = async () => {
-    if (!pdfRef.current || isExportingPdf) return;
-
+    if (isExportingPdf) return;
     try {
       setIsExportingPdf(true);
-      await exportElementToPdf(pdfRef.current, {
-        fileName: "kashif-ai-engineer-portfolio.pdf",
-        scale: 2,
-        backgroundColor: "#05070a",
-      });
+      exportSimplePortfolioPdf(
+        {
+          profile,
+          professionalSummary:
+            "Senior AI Engineer and team lead with 8+ years of experience building production-grade AI systems, LLM applications, agent orchestration frameworks, and custom machine learning infrastructure.",
+          expertise,
+          stack,
+          projects,
+          productsLeadership,
+          experience,
+          leadershipStrengths: strengths,
+          education,
+          certs,
+        },
+        "kashif-ai-engineer-portfolio.pdf",
+      );
     } finally {
       setIsExportingPdf(false);
     }
@@ -332,7 +437,7 @@ export default function App() {
 
   const [windows, setWindows] =
     useState<Record<WindowId, WindowState>>(initialWindows);
-  const [zCounter, setZCounter] = useState(10);
+  const [zCounter, setZCounter] = useState(100);
 
   const focused = useMemo(
     () =>
@@ -350,11 +455,32 @@ export default function App() {
     });
   };
 
+  const ICON_LANE_WIDTH = 170;
+  const SAFE_LEFT = ICON_LANE_WIDTH + 20;
+
   const openWindow = (id: WindowId) => {
-    setWindows((curr) => ({
-      ...curr,
-      [id]: { ...curr[id], isOpen: true, minimized: false },
-    }));
+    setWindows((curr) => {
+      const w = curr[id];
+
+      // Always spawn to the right of icon lane
+      const baseX = SAFE_LEFT + (zCounter % 5) * 16;
+      const baseY = TOPBAR_HEIGHT + 24 + (zCounter % 5) * 14;
+
+      const nextX = Math.max(baseX, SAFE_LEFT);
+      const nextY = Math.max(baseY, TOPBAR_HEIGHT + 12);
+
+      return {
+        ...curr,
+        [id]: {
+          ...w,
+          isOpen: true,
+          minimized: false,
+          x: nextX,
+          y: nextY,
+        },
+      };
+    });
+
     bringToFront(id);
   };
 
@@ -432,16 +558,25 @@ export default function App() {
     switch (id) {
       case "about":
         return <AboutWindow />;
-      case "projects":
-        return <ProjectsWindow />;
-      case "skills":
-        return <SkillsWindow />;
+      case "professionalSummary":
+        return <ProfessionalSummaryWindow />;
       case "experience":
         return <ExperienceWindow />;
-      case "contact":
-        return <ContactWindow />;
-      case "terminal":
-        return <TerminalWindow />;
+
+      case "coreExpertise":
+        return <CoreExpertiseWindow />;
+      case "technicalStack":
+        return <TechnicalStackWindow />;
+      case "selectedResearchEngineeringProjects":
+        return <SelectedResearchEngineeringProjectsWindow />;
+      case "selectedProductsLeadership":
+        return <SelectedProductsLeadershipWindow />;
+      case "leadershipStrengths":
+        return <LeadershipStrengthsWindow />;
+      case "education":
+        return <EducationWindow />;
+      case "certificates":
+        return <CertificatesWindow />;
       default:
         return null;
     }
@@ -454,13 +589,22 @@ export default function App() {
   return (
     <main
       ref={desktopRef}
-      className={`terminal-scanlines terminal-vignette relative w-full bg-[#05070a] ${
+      className={`terminal-scanlines terminal-vignette relative w-full ${
         isDesktop ? "h-screen overflow-hidden" : "min-h-screen overflow-y-auto"
       }`}
+      style={{ background: "var(---bg-gradient)" }}
     >
       <div className="animate-[fadeIn_.35s_ease-out]">
         {/* grid background */}
-        <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(74,222,128,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(74,222,128,0.07)_1px,transparent_1px)] [background-size:24px_24px]" />
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            opacity: theme === "light" ? 0.16 : 0.3,
+            backgroundImage:
+              "linear-gradient(rgba(74,222,128,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(74,222,128,0.07) 1px,transparent 1px)",
+            backgroundSize: "24px 24px",
+          }}
+        />
         {/* green glow blob */}
         <div className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl" />
 
@@ -471,6 +615,10 @@ export default function App() {
           layoutMode={layoutMode}
           onToggleLayoutMode={() =>
             setLayoutMode((m) => (m === "tiling" ? "floating" : "tiling"))
+          }
+          theme={theme}
+          onToggleTheme={() =>
+            setTheme((t) => (t === "dark" ? "light" : "dark"))
           }
         />
 
@@ -486,20 +634,26 @@ export default function App() {
       </div>*/}
 
         {isDesktop && layoutMode === "floating" && (
-          <section className="relative z-10 grid grid-cols-2 gap-2 px-4 pt-14 sm:grid-cols-4 md:w-[460px]">
-            {appDefinitions.map((app) => (
-              <DesktopIcon key={app.id} app={app} onOpen={openWindow} />
-            ))}
+          <section
+            className="fixed left-4 top-14 z-10 w-[150px] overflow-y-auto overflow-x-hidden pr-1"
+            style={{ height: "calc(100vh - 80px)" }}
+          >
+            <div className="grid grid-cols-1 gap-2">
+              {appDefinitions.map((app) => (
+                <DesktopIcon key={app.id} app={app} onOpen={openWindow} />
+              ))}
+            </div>
           </section>
         )}
 
         {isDesktop && layoutMode === "tiling" ? (
           <section
-            className="relative z-20 overflow-y-auto px-4 pb-24"
-            style={{
-              marginTop: TOPBAR_HEIGHT,
-              height: `calc(100vh - ${TOPBAR_HEIGHT}px)`,
-            }}
+            className={`relative z-20 ${
+              isDesktop
+                ? "h-[calc(100vh-50px)] overflow-y-auto px-2 pb-28"
+                : "px-3 pb-28"
+            }`}
+            style={{ marginTop: TOPBAR_HEIGHT }}
           >
             <DndContext
               sensors={sensors}
@@ -524,25 +678,29 @@ export default function App() {
           </section>
         ) : (
           <section
-            className={`relative z-20 ${isDesktop ? "" : "px-3 pb-28"}`}
+            className={`relative z-20 ${isDesktop ? "h-[calc(100vh-50px)] overflow-y-auto overflow-x-hidden" : "px-3 pb-28"}`}
             style={{ marginTop: TOPBAR_HEIGHT }}
           >
-            {Object.values(windows).map((win) => (
-              <WindowFrame
-                key={win.id}
-                win={win}
-                mobileMode={!isDesktop}
-                isFocused={focused?.id === win.id}
-                onFocus={bringToFront}
-                onClose={closeWindow}
-                onMinimize={minimizeWindow}
-                onToggleMaximize={toggleMaximize}
-                onDragStop={onDragStop}
-                onResizeStop={onResizeStop}
-              >
-                {renderContent(win.id)}
-              </WindowFrame>
-            ))}
+            <div
+              className={`${isDesktop ? "relative min-h-[1400px] pb-28" : ""}`}
+            >
+              {Object.values(windows).map((win) => (
+                <WindowFrame
+                  key={win.id}
+                  win={win}
+                  mobileMode={!isDesktop}
+                  isFocused={focused?.id === win.id}
+                  onFocus={bringToFront}
+                  onClose={closeWindow}
+                  onMinimize={minimizeWindow}
+                  onToggleMaximize={toggleMaximize}
+                  onDragStop={onDragStop}
+                  onResizeStop={onResizeStop}
+                >
+                  {renderContent(win.id)}
+                </WindowFrame>
+              ))}
+            </div>
           </section>
         )}
 
@@ -554,8 +712,8 @@ export default function App() {
             position: "fixed",
             left: "-20000px",
             top: 0,
-            opacity: 1,
             pointerEvents: "none",
+            opacity: 1,
             zIndex: -1,
           }}
         >

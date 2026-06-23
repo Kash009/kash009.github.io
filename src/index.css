@@ -5,13 +5,66 @@
 :root {
     color-scheme: dark;
     --bg: #05070a;
-    --panel: rgba(8, 12, 16, 0.82);
-    --panel-2: rgba(12, 18, 24, 0.9);
-    --line: rgba(74, 222, 128, 0.22);
-    --line-strong: rgba(74, 222, 128, 0.42);
+    --panel: #070d12;
+    --panel-2: #091118;
+    --line: rgba(74, 222, 128, 0.25);
+    --line-strong: rgba(74, 222, 128, 0.45);
+    /*--text: #d1fae5;*/
+    /*--muted: #86efac;*/
+    /*--accent: #4ade80;*/
+
+    --accent: #34d399; /* softer emerald */
+    --accent-strong: #10b981; /* darker for borders/buttons */
     --text: #d1fae5;
-    --muted: #7dd3a9;
-    --accent: #4ade80;
+    --muted: #9ca3af;
+
+    --bg-gradient:
+        radial-gradient(
+            1200px 600px at 20% -10%,
+            rgba(16, 185, 129, 0.12),
+            transparent 60%
+        ),
+        radial-gradient(
+            1000px 500px at 90% 0%,
+            rgba(56, 189, 248, 0.1),
+            transparent 55%
+        ),
+        linear-gradient(180deg, #05070a 0%, #0a1117 100%);
+
+    --surface-tint-1: rgba(16, 185, 129, 0.08);
+    --surface-tint-2: rgba(16, 185, 129, 0.12);
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f4f7fb;
+    --panel: #ffffff;
+    --panel-2: #eef3f9;
+    --line: rgba(16, 185, 129, 0.28);
+    --line-strong: rgba(16, 185, 129, 0.45);
+    /*--text: #0f172a;*/
+    /*--muted: #334155;*/
+
+    --accent: #0f766e; /* teal-700, much cleaner on light bg */
+    --accent-strong: #115e59; /* teal-800 */
+    --text: #0f172a;
+    --muted: #475569;
+
+    --bg-gradient:
+        radial-gradient(
+            1200px 600px at 15% -10%,
+            rgba(16, 185, 129, 0.1),
+            transparent 58%
+        ),
+        radial-gradient(
+            1000px 500px at 90% 0%,
+            rgba(14, 165, 233, 0.08),
+            transparent 54%
+        ),
+        linear-gradient(180deg, #f8fbff 0%, #eef5ff 55%, #eaf3ff 100%);
+
+    --surface-tint-1: rgba(15, 118, 110, 0.06);
+    --surface-tint-2: rgba(15, 118, 110, 0.1);
 }
 
 html,
@@ -20,6 +73,7 @@ body,
     height: 100%;
     margin: 0;
     background: var(--bg);
+    color: var(--text);
 }
 
 * {
@@ -204,6 +258,11 @@ body {
     }
 }
 
+.pdf-icon-fix svg {
+    display: block;
+    vertical-align: middle;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -215,47 +274,66 @@ body {
     }
 }
 
-/* Dense tiling layout for large screens */
+.icon-lane {
+    scrollbar-width: thin;
+}
+
+/* Dense 10-tile layout (with About + Experience) */
 .tile-grid-dense {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     grid-template-areas:
-        "about about about about terminal terminal terminal terminal contact contact contact contact"
-        "skills skills skills skills projects projects projects projects experience experience experience experience";
+        "about about about summary summary summary core core core stack stack stack"
+        "experience experience experience experience experience experience experience experience experience experience experience experience"
+        "research research research research research research products products products products products products"
+        "leadership leadership leadership leadership leadership leadership education education education certificates certificates certificates";
     gap: 0.75rem;
-    grid-auto-rows: minmax(250px, auto);
+    grid-auto-rows: minmax(240px, auto);
 }
 
 .tile-about {
     grid-area: about;
 }
-.tile-terminal {
-    grid-area: terminal;
+.tile-summary {
+    grid-area: summary;
 }
-.tile-contact {
-    grid-area: contact;
+.tile-core {
+    grid-area: core;
 }
-.tile-skills {
-    grid-area: skills;
-}
-.tile-projects {
-    grid-area: projects;
+.tile-stack {
+    grid-area: stack;
 }
 .tile-experience {
     grid-area: experience;
 }
+.tile-research {
+    grid-area: research;
+}
+.tile-products {
+    grid-area: products;
+}
+.tile-leadership {
+    grid-area: leadership;
+}
+.tile-education {
+    grid-area: education;
+}
+.tile-certificates {
+    grid-area: certificates;
+}
 
-/* fallback for smaller desktop/tablet */
+/* Medium desktop fallback */
 @media (max-width: 1279px) {
     .tile-grid-dense {
         grid-template-areas:
-            "about about about about about about terminal terminal terminal terminal terminal terminal"
-            "contact contact contact contact contact contact skills skills skills skills skills skills"
-            "projects projects projects projects projects projects experience experience experience experience experience experience";
+            "about about about about research research research research stack stack stack stack"
+            "education education education education certificates certificates certificates certificates leadership leadership leadership leadership"
+            "products products products products products products experience experience experience experience experience experience"
+            "core core core core core core summary summary summary summary summary summary";
     }
 }
 
-/* mobile stacked */
+/* Tablet/mobile fallback */
 @media (max-width: 1023px) {
     .tile-grid-dense {
         display: block;

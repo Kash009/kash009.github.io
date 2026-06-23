@@ -1,20 +1,32 @@
 import {
   UserRound,
-  FolderKanban,
   BrainCircuit,
+  Wrench,
+  FolderKanban,
   BriefcaseBusiness,
-  FileText,
-  Mail,
-  TerminalSquare,
+  Users,
+  GraduationCap,
+  Award,
 } from "lucide-react";
 import { AppDefinition } from "../types";
 
 export const appDefinitions: AppDefinition[] = [
   { id: "about", title: "About", icon: UserRound },
-  { id: "projects", title: "Projects", icon: FolderKanban },
-  { id: "skills", title: "Skills", icon: BrainCircuit },
+  { id: "professionalSummary", title: "Professional Summary", icon: UserRound },
   { id: "experience", title: "Experience", icon: BriefcaseBusiness },
-  // { id: "resume", title: "Resume", icon: FileText },
-  { id: "contact", title: "Contact", icon: Mail },
-  { id: "terminal", title: "Terminal", icon: TerminalSquare },
+  { id: "coreExpertise", title: "Core Expertise", icon: BrainCircuit },
+  { id: "technicalStack", title: "Technical Stack", icon: Wrench },
+  {
+    id: "selectedResearchEngineeringProjects",
+    title: "Selected Research & Engineering Projects",
+    icon: FolderKanban,
+  },
+  {
+    id: "selectedProductsLeadership",
+    title: "Selected Products & Leadership",
+    icon: BriefcaseBusiness,
+  },
+  { id: "leadershipStrengths", title: "Leadership strengths", icon: Users },
+  { id: "education", title: "Education", icon: GraduationCap },
+  { id: "certificates", title: "Certificates", icon: Award },
 ];

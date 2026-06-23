@@ -2,25 +2,42 @@ import { profile } from "../../data/content";
 
 export default function AboutWindow() {
   return (
-    <section className="space-y-4 text-emerald-100">
-      <h2 className="text-xl font-semibold text-emerald-300">{profile.name}</h2>
-      <p className="text-sm text-emerald-200">{profile.role}</p>
-      <p className="text-sm text-emerald-100/90">{profile.tagline}</p>
+    <section className="space-y-4" style={{ color: "var(--text)" }}>
+      <h2 className="text-xl font-semibold" style={{ color: "var(--accent)" }}>
+        {profile.name}
+      </h2>
+      <p className="text-sm" style={{ color: "var(--muted)" }}>
+        {profile.role}
+      </p>
+      <p className="text-sm">{profile.tagline}</p>
 
-      <div className="space-y-1 text-xs text-emerald-300/80">
+      <div className="space-y-1 text-xs" style={{ color: "var(--muted)" }}>
         <p>location: {profile.location}</p>
-        <p>email: {profile.email}</p>
+        <p>phone: {profile.phone}</p>
+        <a href={`mailto:${profile.email}`} className="block hover:underline">
+          email: {profile.email}
+        </a>
         <a
-          className="block hover:text-emerald-200"
           href={profile.github}
           target="_blank"
+          rel="noreferrer"
+          className="block hover:underline"
         >
           github: {profile.github}
         </a>
         <a
-          className="block hover:text-emerald-200"
+          href={profile.codeberg}
+          target="_blank"
+          rel="noreferrer"
+          className="block hover:underline"
+        >
+          codeberg: {profile.codeberg}
+        </a>
+        <a
           href={profile.linkedin}
           target="_blank"
+          rel="noreferrer"
+          className="block hover:underline"
         >
           linkedin: {profile.linkedin}
         </a>

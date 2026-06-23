@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   define: {
     global: "globalThis",
-    process: {},
+    process: {}
   },
-  base: "/",
+  base: "/"
 });

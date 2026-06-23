@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import process from "process";
+// import process from "process";
 import App from "./App";
 import "./index.css";
 
-(globalThis as any).process = process;
+// (globalThis as any).process = process;
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

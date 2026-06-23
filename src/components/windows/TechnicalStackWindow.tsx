@@ -20,7 +20,9 @@ export default function TechnicalStackWindow() {
             className="mb-2 flex items-center gap-2 text-xs uppercase tracking-wider"
             style={{ color: "var(--accent)" }}
           >
-            <Icon size={14} style={{ color: "var(--accent)" }} />
+            <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center pdf-icon-fix">
+              <Icon size={14} style={{ color: "var(--accent)" }} />
+            </span>
             <span>{title}</span>
           </h3>
 
@@ -28,7 +30,7 @@ export default function TechnicalStackWindow() {
             {items.map((item) => (
               <span
                 key={item}
-                className="rounded border px-2 py-0.5 text-[11px]"
+                className="max-w-full rounded border px-2 py-0.5 text-[11px] break-words whitespace-normal"
                 style={{
                   borderColor: "var(--line)",
                   color: "var(--text)",

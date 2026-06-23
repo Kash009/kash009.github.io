@@ -11,17 +11,23 @@ export default function AboutWindow() {
       </p>
       <p className="text-sm">{profile.tagline}</p>
 
-      <div className="space-y-1 text-xs" style={{ color: "var(--muted)" }}>
+      <div
+        className="space-y-1 text-xs [overflow-wrap:anywhere]"
+        style={{ color: "var(--muted)" }}
+      >
         <p>location: {profile.location}</p>
         <p>phone: {profile.phone}</p>
-        <a href={`mailto:${profile.email}`} className="block hover:underline">
+        <a
+          href={`mailto:${profile.email}`}
+          className="block break-all hover:underline"
+        >
           email: {profile.email}
         </a>
         <a
           href={profile.github}
           target="_blank"
           rel="noreferrer"
-          className="block hover:underline"
+          className="block break-all hover:underline"
         >
           github: {profile.github}
         </a>
@@ -29,7 +35,7 @@ export default function AboutWindow() {
           href={profile.codeberg}
           target="_blank"
           rel="noreferrer"
-          className="block hover:underline"
+          className="block break-all hover:underline"
         >
           codeberg: {profile.codeberg}
         </a>
@@ -37,7 +43,7 @@ export default function AboutWindow() {
           href={profile.linkedin}
           target="_blank"
           rel="noreferrer"
-          className="block hover:underline"
+          className="block break-all hover:underline"
         >
           linkedin: {profile.linkedin}
         </a>

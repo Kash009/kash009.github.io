@@ -25,7 +25,9 @@ export default function LeadershipStrengthsWindow() {
                 style={{ color: "var(--accent)" }}
               />
             </span>
-            <span className="leading-tight">{label}</span>
+            <span className="min-w-0 leading-tight [overflow-wrap:anywhere]">
+              {label}
+            </span>
           </div>
         ))}
       </div>

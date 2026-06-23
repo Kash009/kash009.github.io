@@ -74,6 +74,8 @@ body,
     margin: 0;
     background: var(--bg);
     color: var(--text);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 * {
@@ -167,6 +169,60 @@ body {
 #pdf-export-layout a {
     color: #86efac !important;
     text-decoration: none;
+}
+
+#pdf-export-layout,
+#pdf-export-layout * {
+    box-sizing: border-box;
+}
+
+#pdf-export-layout h1,
+#pdf-export-layout h2,
+#pdf-export-layout h3,
+#pdf-export-layout p,
+#pdf-export-layout li,
+#pdf-export-layout span,
+#pdf-export-layout a {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+#pdf-export-layout .pdf-icon-fix {
+    display: inline-flex;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+
+#pdf-export-layout .pdf-icon-fix svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+}
+
+#pdf-export-layout.pdf-capture-root {
+    line-height: 1.35 !important;
+}
+
+#pdf-export-layout.pdf-capture-root h1,
+#pdf-export-layout.pdf-capture-root h2,
+#pdf-export-layout.pdf-capture-root h3,
+#pdf-export-layout.pdf-capture-root p,
+#pdf-export-layout.pdf-capture-root li,
+#pdf-export-layout.pdf-capture-root span,
+#pdf-export-layout.pdf-capture-root a {
+    line-height: 1.35 !important;
+}
+
+#pdf-export-layout.pdf-capture-root .pdf-icon-fix {
+    display: none !important;
+}
+
+#pdf-export-layout.pdf-capture-root .flex {
+    align-items: flex-start !important;
 }
 
 /* Visibility control */

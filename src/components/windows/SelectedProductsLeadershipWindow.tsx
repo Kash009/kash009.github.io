@@ -17,7 +17,7 @@ export default function SelectedProductsLeadershipWindow() {
               background: "var(--surface-tint-1)",
             }}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-start gap-2">
               <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center pdf-icon-fix">
                 <Icon
                   size={14}
@@ -26,19 +26,21 @@ export default function SelectedProductsLeadershipWindow() {
                 />
               </span>
 
-              <h3
-                className="text-sm font-semibold leading-tight"
-                style={{ color: "var(--accent)" }}
-              >
-                {name}
-              </h3>
+              <div className="min-w-0 [overflow-wrap:anywhere]">
+                <h3
+                  className="text-sm font-semibold leading-tight"
+                  style={{ color: "var(--accent)" }}
+                >
+                  {name}
+                </h3>
 
-              <span
-                className="text-xs leading-tight"
-                style={{ color: "var(--muted)" }}
-              >
-                • {company}
-              </span>
+                <p
+                  className="text-xs leading-tight"
+                  style={{ color: "var(--muted)" }}
+                >
+                  {company}
+                </p>
+              </div>
             </div>
 
             <p

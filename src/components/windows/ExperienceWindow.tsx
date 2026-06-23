@@ -17,7 +17,7 @@ export default function ExperienceWindow() {
           }}
         >
           <div className="flex flex-wrap items-start justify-between gap-2">
-            <div>
+            <div className="min-w-0 [overflow-wrap:anywhere]">
               <h3
                 className="text-sm font-semibold"
                 style={{ color: "var(--accent)" }}
@@ -28,7 +28,10 @@ export default function ExperienceWindow() {
                 {job.company} • {job.location}
               </p>
             </div>
-            <span className="text-xs" style={{ color: "var(--muted)" }}>
+            <span
+              className="shrink-0 text-xs"
+              style={{ color: "var(--muted)" }}
+            >
               {job.period}
             </span>
           </div>

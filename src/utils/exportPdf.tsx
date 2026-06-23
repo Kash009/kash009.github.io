@@ -1,3 +1,4 @@
+import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 type Profile = {
@@ -41,6 +42,204 @@ type SimplePortfolioData = {
 
 const PAGE = { w: 210, h: 297, m: 12 };
 const CONTENT_W = PAGE.w - PAGE.m * 2;
+
+type ExportElementToPdfOptions = {
+  marginMm?: number;
+  continuationTopGapMm?: number;
+  scale?: number;
+  backgroundColor?: string;
+};
+
+export async function exportElementToPdf(
+  element: HTMLElement,
+  fileName = "portfolio.pdf",
+  options: ExportElementToPdfOptions = {},
+) {
+  const marginMm = options.marginMm ?? 10;
+  const continuationTopGapMm = options.continuationTopGapMm ?? 3;
+  const scale = options.scale ?? 2;
+  const backgroundColor = options.backgroundColor ?? "#05070a";
+
+  if (document.fonts) {
+    try {
+      await document.fonts.ready;
+    } catch {
+      // no-op: continue even if browser font readiness check fails
+    }
+  }
+
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pageW = pdf.internal.pageSize.getWidth();
+  const pageH = pdf.internal.pageSize.getHeight();
+  const contentW = pageW - marginMm * 2;
+  const contentH = pageH - marginMm * 2;
+
+  const host = document.createElement("div");
+  host.style.position = "fixed";
+  host.style.left = "0";
+  host.style.top = "0";
+  host.style.opacity = "0";
+  host.style.pointerEvents = "none";
+  host.style.overflow = "visible";
+  host.style.zIndex = "-1";
+
+  const clone = element.cloneNode(true) as HTMLElement;
+  clone.classList.add("pdf-capture-root");
+  clone.style.margin = "0";
+  clone.style.transform = "none";
+  clone.style.position = "relative";
+
+  host.appendChild(clone);
+  document.body.appendChild(host);
+
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+
+  const rootRect = clone.getBoundingClientRect();
+  const sectionBreaksCss = Array.from(
+    clone.querySelectorAll<HTMLElement>(".pdf-section, .pdf-breakpoint"),
+  )
+    .flatMap((section) => {
+      const r = section.getBoundingClientRect();
+      const top = Math.max(0, r.top - rootRect.top);
+      const bottom = Math.max(0, r.bottom - rootRect.top);
+      return [top, bottom];
+    })
+    .sort((a, b) => a - b);
+
+  const captureWidth = Math.max(
+    1,
+    Math.round(
+      Math.max(clone.scrollWidth, clone.getBoundingClientRect().width),
+    ),
+  );
+  const captureHeight = Math.max(
+    1,
+    Math.round(
+      Math.max(clone.scrollHeight, clone.getBoundingClientRect().height),
+    ),
+  );
+
+  let canvas: HTMLCanvasElement;
+  try {
+    canvas = await html2canvas(clone, {
+      backgroundColor,
+      scale,
+      useCORS: true,
+      logging: false,
+      foreignObjectRendering: false,
+      width: captureWidth,
+      height: captureHeight,
+      windowWidth: captureWidth,
+      windowHeight: captureHeight,
+      scrollX: 0,
+      scrollY: 0,
+    });
+  } finally {
+    document.body.removeChild(host);
+  }
+
+  const pxPerMm = canvas.width / contentW;
+  const firstPageHeightPx = Math.max(1, Math.floor(contentH * pxPerMm));
+  const continuationContentH = Math.max(1, contentH - continuationTopGapMm);
+  const continuationPageHeightPx = Math.max(
+    1,
+    Math.floor(continuationContentH * pxPerMm),
+  );
+  const renderScale = canvas.width / captureWidth;
+
+  const sectionBreaksPx = Array.from(
+    new Set(
+      sectionBreaksCss
+        .map((v) => Math.round(v * renderScale))
+        .filter((v) => v > 0 && v < canvas.height),
+    ),
+  ).sort((a, b) => a - b);
+
+  const paintPageBackground = () => {
+    pdf.setFillColor(backgroundColor);
+    pdf.rect(0, 0, pageW, pageH, "F");
+  };
+
+  let renderedPx = 0;
+  let pageIndex = 0;
+
+  while (renderedPx < canvas.height) {
+    const currentPageHeightPx =
+      pageIndex === 0 ? firstPageHeightPx : continuationPageHeightPx;
+    const currentPageTopMm =
+      marginMm + (pageIndex === 0 ? 0 : continuationTopGapMm);
+
+    let sliceHeightPx = Math.min(
+      currentPageHeightPx,
+      canvas.height - renderedPx,
+    );
+
+    if (renderedPx + sliceHeightPx < canvas.height && sectionBreaksPx.length) {
+      const targetEnd = renderedPx + sliceHeightPx;
+      const minPageFillPx = Math.floor(currentPageHeightPx * 0.62);
+      const minEnd = renderedPx + Math.min(minPageFillPx, sliceHeightPx - 1);
+
+      let bestBreak = -1;
+      let fallbackBreak = -1;
+      for (const boundary of sectionBreaksPx) {
+        if (boundary <= renderedPx + 1) continue;
+        if (boundary > targetEnd) break;
+        fallbackBreak = boundary;
+        if (boundary >= minEnd) bestBreak = boundary;
+      }
+
+      if (bestBreak > renderedPx + 1) {
+        sliceHeightPx = bestBreak - renderedPx;
+      } else if (fallbackBreak > renderedPx + 1) {
+        sliceHeightPx = fallbackBreak - renderedPx;
+      }
+    }
+
+    const pageCanvas = document.createElement("canvas");
+    pageCanvas.width = canvas.width;
+    pageCanvas.height = sliceHeightPx;
+
+    const ctx = pageCanvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Unable to initialize PDF canvas context.");
+    }
+
+    ctx.drawImage(
+      canvas,
+      0,
+      renderedPx,
+      canvas.width,
+      sliceHeightPx,
+      0,
+      0,
+      canvas.width,
+      sliceHeightPx,
+    );
+
+    if (pageIndex > 0) {
+      pdf.addPage();
+    }
+
+    paintPageBackground();
+
+    const sliceHeightMm = sliceHeightPx / pxPerMm;
+    pdf.addImage(
+      pageCanvas,
+      "PNG",
+      marginMm,
+      currentPageTopMm,
+      contentW,
+      sliceHeightMm,
+      undefined,
+      "FAST",
+    );
+
+    renderedPx += sliceHeightPx;
+    pageIndex += 1;
+  }
+
+  pdf.save(fileName);
+}
 
 const FONT = {
   section: 12,

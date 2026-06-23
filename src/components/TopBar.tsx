@@ -26,29 +26,32 @@ export default function TopBar({
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-[1000] flex h-10 items-center justify-between px-4 backdrop-blur-xl"
+      className="sticky inset-x-0 top-0 z-[1200] flex h-[50px] items-center gap-2 px-2 sm:px-4 backdrop-blur-md"
       style={{
         borderBottom: "1px solid var(--line)",
         background: "var(--panel-2)",
       }}
     >
       <div
-        className="text-xs uppercase tracking-[0.2em]"
+        className="shrink-0 text-[10px] uppercase tracking-[0.16em] sm:text-xs sm:tracking-[0.2em]"
         style={{ color: "var(--accent)" }}
       >
         Terminal OS
       </div>
 
-      <div className="text-xs" style={{ color: "var(--muted)" }}>
+      <div
+        className="hidden min-w-0 flex-1 truncate text-xs md:block"
+        style={{ color: "var(--muted)" }}
+      >
         {focusedTitle
           ? `session://${focusedTitle.toLowerCase()}`
           : "session://desktop"}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="ml-auto flex items-center gap-1 sm:gap-2">
         <button
           onClick={onToggleTheme}
-          className="rounded px-2 py-1 text-[10px] uppercase tracking-wider"
+          className="hidden touch-manipulation rounded px-2 py-1 text-[10px] uppercase tracking-wider sm:inline-flex"
           style={{
             border: "1px solid var(--line)",
             background: "var(--surface-tint-2)",
@@ -61,7 +64,7 @@ export default function TopBar({
 
         <button
           onClick={onToggleLayoutMode}
-          className="rounded px-2 py-1 text-[10px] uppercase tracking-wider"
+          className="hidden touch-manipulation rounded px-2 py-1 text-[10px] uppercase tracking-wider md:inline-flex"
           style={{
             border: "1px solid var(--line)",
             background: "var(--surface-tint-2)",
@@ -75,7 +78,7 @@ export default function TopBar({
         <button
           onClick={onExportPdf}
           disabled={exportingPdf}
-          className="rounded px-2 py-1 text-[10px] uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-60"
+          className="touch-manipulation whitespace-nowrap rounded px-2 py-1 text-[10px] uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-60"
           style={{
             border: "1px solid var(--line)",
             background: "var(--surface-tint-2)",
@@ -85,7 +88,10 @@ export default function TopBar({
           {exportingPdf ? "Exporting..." : "Export PDF"}
         </button>
 
-        <div className="text-xs" style={{ color: "var(--muted)" }}>
+        <div
+          className="hidden text-xs sm:block"
+          style={{ color: "var(--muted)" }}
+        >
           {time}
         </div>
       </div>

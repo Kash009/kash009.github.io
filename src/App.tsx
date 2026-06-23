@@ -19,18 +19,6 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 import PdfExportLayout from "./components/PdfExportLayout";
-import { exportSimplePortfolioPdf } from "./utils/exportPdf";
-import {
-  profile,
-  expertise,
-  stack,
-  projects,
-  productsLeadership,
-  experience,
-  strengths,
-  education,
-  certs,
-} from "./data/content";
 
 import ProfessionalSummaryWindow from "./components/windows/ProfessionalSummaryWindow";
 import CoreExpertiseWindow from "./components/windows/CoreExpertiseWindow";
@@ -412,23 +400,18 @@ export default function App() {
 
   const handleExportPdf = async () => {
     if (isExportingPdf) return;
+    if (!pdfRef.current) return;
+
     try {
       setIsExportingPdf(true);
-      exportSimplePortfolioPdf(
-        {
-          profile,
-          professionalSummary:
-            "Senior AI Engineer and team lead with 8+ years of experience building production-grade AI systems, LLM applications, agent orchestration frameworks, and custom machine learning infrastructure.",
-          expertise,
-          stack,
-          projects,
-          productsLeadership,
-          experience,
-          leadershipStrengths: strengths,
-          education,
-          certs,
-        },
+      await exportElementToPdf(
+        pdfRef.current,
         "kashif-ai-engineer-portfolio.pdf",
+        {
+          marginMm: 0,
+          continuationTopGapMm: 3,
+          backgroundColor: theme === "light" ? "#f4f7fb" : "#05070a",
+        },
       );
     } finally {
       setIsExportingPdf(false);
@@ -650,10 +633,9 @@ export default function App() {
           <section
             className={`relative z-20 ${
               isDesktop
-                ? "h-[calc(100vh-50px)] overflow-y-auto px-2 pb-28"
-                : "px-3 pb-28"
+                ? "h-[calc(100vh-50px)] overflow-y-auto px-2 pt-2 pb-28"
+                : "px-3 pt-2 pb-28"
             }`}
-            style={{ marginTop: TOPBAR_HEIGHT }}
           >
             <DndContext
               sensors={sensors}
@@ -678,8 +660,7 @@ export default function App() {
           </section>
         ) : (
           <section
-            className={`relative z-20 ${isDesktop ? "h-[calc(100vh-50px)] overflow-y-auto overflow-x-hidden" : "px-3 pb-28"}`}
-            style={{ marginTop: TOPBAR_HEIGHT }}
+            className={`relative z-20 ${isDesktop ? "h-[calc(100vh-50px)] overflow-y-auto overflow-x-hidden pt-2" : "px-3 pt-2 pb-28"}`}
           >
             <div
               className={`${isDesktop ? "relative min-h-[1400px] pb-28" : ""}`}
@@ -710,15 +691,15 @@ export default function App() {
           aria-hidden="true"
           style={{
             position: "fixed",
-            left: "-20000px",
+            left: 0,
             top: 0,
             pointerEvents: "none",
-            opacity: 1,
+            opacity: 0,
             zIndex: -1,
           }}
         >
           <div ref={pdfRef}>
-            <PdfExportLayout />
+            <PdfExportLayout theme={theme} />
           </div>
         </div>
       </div>

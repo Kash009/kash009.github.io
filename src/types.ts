@@ -10,7 +10,8 @@ export type WindowId =
   | "leadershipStrengths"
   | "education"
   | "certificates"
-  | "experience";
+  | "experience"
+  | "personalProjects";
 
 export type WindowState = {
   id: WindowId;

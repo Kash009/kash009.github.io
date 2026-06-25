@@ -404,7 +404,7 @@ body {
     scrollbar-width: thin;
 }
 
-/* Dense 10-tile layout (with About + Experience) */
+/* Dense 11-tile layout (with About + Experience) */
 .tile-grid-dense {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -412,7 +412,8 @@ body {
         "about about about summary summary summary core core core stack stack stack"
         "experience experience experience experience experience experience experience experience experience experience experience experience"
         "research research research research research research products products products products products products"
-        "leadership leadership leadership leadership leadership leadership education education education certificates certificates certificates";
+        "leadership leadership leadership leadership leadership leadership education education education certificates certificates certificates"
+        "personal personal personal personal personal personal personal personal personal personal personal personal";
     gap: 0.75rem;
     grid-auto-rows: minmax(240px, auto);
 }
@@ -447,6 +448,9 @@ body {
 .tile-certificates {
     grid-area: certificates;
 }
+.tile-personal-projects {
+    grid-area: personal;
+}
 
 /* Medium desktop fallback */
 @media (max-width: 1279px) {
@@ -455,7 +459,8 @@ body {
             "about about about about research research research research stack stack stack stack"
             "education education education education certificates certificates certificates certificates leadership leadership leadership leadership"
             "products products products products products products experience experience experience experience experience experience"
-            "core core core core core core summary summary summary summary summary summary";
+            "core core core core core core summary summary summary summary summary summary"
+            "personal personal personal personal personal personal personal personal personal personal personal personal";
     }
 }
 

@@ -40,6 +40,7 @@ import AboutWindow from "./components/windows/AboutWindow";
 import ProjectsWindow from "./components/windows/ProjectsWindow";
 import SkillsWindow from "./components/windows/SkillsWindow";
 import ExperienceWindow from "./components/windows/ExperienceWindow";
+import PersonalProjectsWindow from "./components/windows/PersonalProjectsWindow";
 // import ResumeWindow from "./components/windows/ResumeWindow";
 import ContactWindow from "./components/windows/ContactWindow";
 import TerminalWindow from "./components/windows/TerminalWindow";
@@ -168,6 +169,18 @@ const initialWindows: Record<WindowId, WindowState> = {
     width: 430,
     height: 260,
   },
+  personalProjects: {
+    id: "personalProjects",
+    title: "Personal Projects",
+    isOpen: true,
+    minimized: false,
+    maximized: false,
+    z: 12,
+    x: 210,
+    y: 1360,
+    width: 560,
+    height: 280,
+  },
 };
 
 // const tileSpanClass: Record<WindowId, string> = {
@@ -289,6 +302,7 @@ export default function App() {
     "leadershipStrengths",
     "education",
     "certificates",
+    "personalProjects",
   ]);
 
   const tileAreaClass: Record<WindowId, string> = {
@@ -302,6 +316,7 @@ export default function App() {
     leadershipStrengths: "tile-leadership",
     education: "tile-education",
     certificates: "tile-certificates",
+    personalProjects: "tile-personal-projects",
   };
 
   const [theme, setTheme] = useState<"dark" | "light">(() => {
@@ -570,6 +585,8 @@ export default function App() {
         return <EducationWindow />;
       case "certificates":
         return <CertificatesWindow />;
+      case "personalProjects":
+        return <PersonalProjectsWindow />;
       default:
         return null;
     }

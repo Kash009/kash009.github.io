@@ -51,7 +51,7 @@ export default function TopBar({
       <div className="ml-auto flex items-center gap-1 sm:gap-2">
         <button
           onClick={onToggleTheme}
-          className="hidden touch-manipulation rounded px-2 py-1 text-[10px] uppercase tracking-wider sm:inline-flex"
+          className="inline-flex touch-manipulation whitespace-nowrap rounded px-1.5 py-1 text-[10px] uppercase tracking-wider sm:px-2"
           style={{
             border: "1px solid var(--line)",
             background: "var(--surface-tint-2)",

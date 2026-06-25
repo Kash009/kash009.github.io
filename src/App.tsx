@@ -628,7 +628,7 @@ export default function App() {
 
         {isDesktop && layoutMode === "floating" && (
           <section
-            className="fixed left-4 top-14 z-10 w-[150px] overflow-y-auto overflow-x-hidden pr-1"
+            className="fixed left-4 top-14 z-40 w-[150px] overflow-y-auto overflow-x-hidden pr-1"
             style={{ height: "calc(100vh - 80px)" }}
           >
             <div className="grid grid-cols-1 gap-2">

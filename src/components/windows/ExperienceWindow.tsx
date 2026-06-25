@@ -36,6 +36,44 @@ export default function ExperienceWindow() {
             </span>
           </div>
 
+          {job.impact && (
+            <div
+              className="mt-3 rounded border px-3 py-2"
+              style={{
+                borderColor: "var(--line)",
+                background: "var(--surface-tint-2)",
+              }}
+            >
+              <p
+                className="text-[10px] uppercase tracking-wider"
+                style={{ color: "var(--accent)" }}
+              >
+                Impact
+              </p>
+              <p
+                className="mt-1 text-xs leading-relaxed"
+                style={{ color: "var(--text)" }}
+              >
+                {job.impact}
+              </p>
+            </div>
+          )}
+
+          {job.stack?.length ? (
+            <p
+              className="mt-2 text-sm leading-relaxed"
+              style={{ color: "var(--muted)" }}
+            >
+              <span
+                className="font-semibold"
+                style={{ color: "var(--accent)" }}
+              >
+                Stack:
+              </span>{" "}
+              {job.stack.join(", ")}
+            </p>
+          ) : null}
+
           <ul
             className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed"
             style={{ color: "var(--text)" }}

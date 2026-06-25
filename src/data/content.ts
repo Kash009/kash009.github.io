@@ -119,7 +119,7 @@ export const productsLeadership = [
     company: "Healsgood AI",
     icon: Users,
     summary:
-      "Led end-to-end AI delivery for the platform, including an internal LLM library, Rust-based agent orchestration, an AI lifecycle engine, API services, and Kubernetes-based deployment, enabling faster feature delivery at scale.",
+      "Led end-to-end AI delivery for a production platform, including an internal LLM library, Rust-based agent orchestration, an AI lifecycle engine, API services, and Kubernetes-based deployment, enabling faster feature delivery at scale.",
     // stack: ["Python", "FastAPI", "LangChain", "PostgreSQL", "Docker"],
     // impact: "Reduced first-response time by 45%.",
   },
@@ -128,7 +128,7 @@ export const productsLeadership = [
     company: "AiFi Technologies",
     icon: Dna,
     summary:
-      "Developed a neuroevolution- and GAN-based pattern-generation engine, enabling rapid experimentation for creative AI use cases.",
+      "Developed a neuroevolution- and GAN-based pattern-generation engine that accelerated creative experimentation while operating within constrained search spaces.",
     // stack: ["Python", "FastAPI", "LangChain", "PostgreSQL", "Docker"],
     // impact: "Reduced first-response time by 45%.",
   },
@@ -137,7 +137,7 @@ export const productsLeadership = [
     company: "AiFi Technologies",
     icon: Handbag,
     summary:
-      "Built a browser-based fashion design solution with interactive 3D models and AI-driven pattern generation, enabling faster concept iteration.",
+      "Built a browser-based fashion design solution with interactive 3D models and AI-driven pattern generation, reducing concept-to-iteration cycles under real-time rendering constraints.",
     // stack: ["Python", "FastAPI", "LangChain", "PostgreSQL", "Docker"],
     // impact: "Reduced first-response time by 45%.",
   },
@@ -146,7 +146,7 @@ export const productsLeadership = [
     company: "AiFi Technologies",
     icon: Broccoli,
     summary:
-      "Built a recommendation system using evolutionary strategies to generate more personalized diet plans from physical parameters and optional blood reports.",
+      "Built an evolutionary-strategy recommendation system to generate more personalized diet plans from sparse physical inputs and optional blood reports.",
     // stack: ["Python", "FastAPI", "LangChain", "PostgreSQL", "Docker"],
     // impact: "Reduced first-response time by 45%.",
   },
@@ -156,42 +156,42 @@ export const projects = [
   {
     name: "Evolutionary Computation Library",
     summary:
-      "Developed an in-house evolutionary-computation library to speed up experimentation and reuse across research projects.",
+      "Developed an in-house evolutionary-computation library to speed up large experiment batches and increase reuse across research projects.",
     stack: ["C++"],
     // impact: "",
   },
   {
     name: "Distributed Evolution",
     summary:
-      "Built a distributed architecture for evolutionary strategies across computer clusters, enabling parallel optimization at larger scale.",
+      "Built a distributed architecture for evolutionary strategies across computer clusters, enabling parallel optimization at cluster scale.",
     stack: ["Python"],
     // impact: "",
   },
   {
     name: "Symbolic Regression",
     summary:
-      "Developed symbolic-regression strategies using Python evolution modules with C++ grammar parsing/evaluation to expand search space and improve expression quality.",
+      "Developed symbolic-regression strategies using Python evolution modules with C++ grammar parsing and evaluation to expand search space under strict expression constraints.",
     stack: ["C++", "Python"],
     // impact: "",
   },
   {
     name: "Omega Infinity (Chess Algorithm)",
     summary:
-      "Developed a modified Monte Carlo Tree Search algorithm, a LibTorch deep neural network, and a chess engine built from scratch in C++ to strengthen move evaluation and search quality.",
+      "Developed a modified Monte Carlo Tree Search algorithm, a LibTorch neural network, and a chess engine in C++ to improve move quality under fixed time-control constraints.",
     stack: ["C++"],
     // impact: "",
   },
   {
     name: "Evolutionary Training Pipeline for Neural Networks",
     summary:
-      "Created a parallel training pipeline for an in-house chess AI on compute clusters to increase training throughput.",
+      "Created a parallel training pipeline for an in-house chess AI on compute clusters, increasing training throughput while keeping runs reproducible under resource limits.",
     stack: ["C++", "Python"],
     // impact: "",
   },
   {
     name: "Heart Monitoring and Diagnosis System",
     summary:
-      "Implemented a 1D-CNN for ECG beat classification, built a portable ECG device with Arduino and bespoke ECG signal processing, and developed an Android app for portable monitoring and diagnosis.",
+      "Implemented a 1D-CNN for ECG beat classification, built a portable ECG device with Arduino and bespoke signal processing, and delivered an Android app for edge-friendly monitoring under noisy-signal constraints.",
     stack: ["Python", "Arduino", "Android"],
     // impact: "",
   },
@@ -253,6 +253,9 @@ export const experience = [
     role: "Senior AI Engineer",
     location: "Dubai, UAE",
     period: "2023 — Present",
+    stack: ["Rust", "Python", "LLMs", "Kubernetes", "Docker", "API Services"],
+    impact:
+      "Delivered production AI capabilities across Careo and Flexzo AI through platform-level architecture and execution.",
     points: [
       "Led AI engineering for Careo and Flexzo AI, translating product priorities into platform capabilities and shipping high-impact AI features.",
       "Architected the platform AI backbone (LLM services, agent workflows, and orchestration layers) to improve reuse, reliability, and delivery speed.",
@@ -267,6 +270,16 @@ export const experience = [
     role: "AI Consultant",
     location: "Sweden (Remote, Part-time)",
     period: "2022 — 2023",
+    stack: [
+      "Python",
+      "Transfer Learning",
+      "Docker",
+      "Google Cloud Platform",
+      "Android (Java)",
+      "iOS (Swift)",
+    ],
+    impact:
+      "Productionized an AI solution from model development to mobile integration and cloud deployment.",
     points: [
       "Developed an AI solution using transfer learning, clustering, and language augmentation to improve model performance with limited labeled data.",
       "Designed a Docker-based deployment architecture on Google Cloud Platform to standardize packaging and release workflows.",
@@ -279,6 +292,19 @@ export const experience = [
     role: "AI Team Lead",
     location: "Abu Dhabi, UAE",
     period: "2018 — 2023",
+    stack: [
+      "Python",
+      "C++",
+      "PyTorch",
+      "TensorFlow",
+      "LibTorch",
+      "CUDA",
+      "OpenCL",
+      "GANs",
+      "Neuroevolution",
+    ],
+    impact:
+      "Scaled research-heavy AI initiatives into production-ready systems across multiple product lines.",
     points: [
       "Led AI development across research and product initiatives, converting experimental work into production-ready capabilities.",
       "Designed GAN and evolutionary-algorithm-based pattern-generation pipelines used in product and design workflows.",
@@ -294,6 +320,9 @@ export const experience = [
     role: "Software Design Engineer",
     location: "Karachi, Pakistan",
     period: "2017 — 2018",
+    stack: ["C++", "Graph Algorithms", "XML Processing"],
+    impact:
+      "Improved component discovery workflows by implementing graph-based traversal for XML-extracted structures.",
     points: [
       "Developed a graph-search algorithm to traverse components extracted from mobile application XML, improving component discovery for downstream tooling.",
     ],

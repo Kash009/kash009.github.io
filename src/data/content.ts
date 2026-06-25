@@ -247,6 +247,28 @@ export const stack = [
   },
 ];
 
+export const personalProjectLinks = [
+  {
+    label: "Codeberg",
+    href: profile.codeberg,
+    description: "Mirror and actively maintained personal projects",
+  },
+  {
+    label: "GitHub",
+    href: profile.github,
+    description: "Open-source repositories and personal experiments",
+  },
+];
+
+export const researchInterests = [
+  "LLM systems, alignment, and agent reliability",
+  "Rust-based multi-agent orchestration and safety",
+  "Neuroevolution and evolutionary computation",
+  "Distributed training and high-throughput inference systems",
+  "Graph-based reasoning and knowledge-driven AI pipelines",
+  "Practical MLOps for production AI lifecycle automation",
+];
+
 export const experience = [
   {
     company: "Healsgood AI",

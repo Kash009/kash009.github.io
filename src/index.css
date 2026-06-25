@@ -404,7 +404,7 @@ body {
     scrollbar-width: thin;
 }
 
-/* Dense 11-tile layout (with About + Experience) */
+/* Dense 12-tile layout (with About + Experience) */
 .tile-grid-dense {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -413,7 +413,7 @@ body {
         "experience experience experience experience experience experience experience experience experience experience experience experience"
         "research research research research research research products products products products products products"
         "leadership leadership leadership leadership leadership leadership education education education certificates certificates certificates"
-        "personal personal personal personal personal personal personal personal personal personal personal personal";
+        "personal personal personal personal personal personal interests interests interests interests interests interests";
     gap: 0.75rem;
     grid-auto-rows: minmax(240px, auto);
 }
@@ -451,6 +451,9 @@ body {
 .tile-personal-projects {
     grid-area: personal;
 }
+.tile-research-interests {
+    grid-area: interests;
+}
 
 /* Medium desktop fallback */
 @media (max-width: 1279px) {
@@ -460,7 +463,7 @@ body {
             "education education education education certificates certificates certificates certificates leadership leadership leadership leadership"
             "products products products products products products experience experience experience experience experience experience"
             "core core core core core core summary summary summary summary summary summary"
-            "personal personal personal personal personal personal personal personal personal personal personal personal";
+            "personal personal personal personal personal personal interests interests interests interests interests interests";
     }
 }
 

@@ -1,18 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import { profile } from "../../data/content";
-
-const personalProjectLinks = [
-  {
-    label: "GitHub",
-    href: profile.github,
-    description: "Open-source repositories and personal experiments",
-  },
-  {
-    label: "Codeberg",
-    href: profile.codeberg,
-    description: "Mirror and actively maintained personal projects",
-  },
-];
+import { personalProjectLinks } from "../../data/content";
 
 export default function PersonalProjectsWindow() {
   return (
@@ -35,7 +22,10 @@ export default function PersonalProjectsWindow() {
               background: "var(--surface-tint-1)",
             }}
           >
-            <h3 className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
+            <h3
+              className="text-sm font-semibold"
+              style={{ color: "var(--accent)" }}
+            >
               {link.label}
             </h3>
             <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>

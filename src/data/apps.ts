@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Award,
   FolderGit2,
+  FlaskConical,
 } from "lucide-react";
 import { AppDefinition } from "../types";
 
@@ -31,4 +32,9 @@ export const appDefinitions: AppDefinition[] = [
   { id: "education", title: "Education", icon: GraduationCap },
   { id: "certificates", title: "Certificates", icon: Award },
   { id: "personalProjects", title: "Personal Projects", icon: FolderGit2 },
+  {
+    id: "researchInterests",
+    title: "Research Interests",
+    icon: FlaskConical,
+  },
 ];

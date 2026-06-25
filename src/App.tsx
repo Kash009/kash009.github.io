@@ -274,7 +274,9 @@ export default function App() {
 
   const [bootDone, setBootDone] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
-  const [layoutMode, setLayoutMode] = useState<"tiling" | "floating">("tiling");
+  const [layoutMode, setLayoutMode] = useState<"tiling" | "floating">(
+    "floating",
+  );
   const [swapSource, setSwapSource] = useState<WindowId | null>(null);
   const [tileOrder, setTileOrder] = useState<WindowId[]>([
     "about",

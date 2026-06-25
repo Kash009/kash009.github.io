@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import AsciiName from "./AsciiName";
 import {
   profile,
   expertise,
@@ -21,7 +22,7 @@ type SectionCardProps = {
 function SectionCard({ title, children }: SectionCardProps) {
   return (
     <section
-      className="pdf-section mb-5 overflow-visible rounded-md border"
+      className="pdf-section mb-[18px] overflow-visible rounded-md border last:mb-0"
       style={{
         breakInside: "avoid",
         pageBreakInside: "avoid",
@@ -30,7 +31,7 @@ function SectionCard({ title, children }: SectionCardProps) {
       }}
     >
       <header
-        className="border-b px-4 py-2 text-xs uppercase tracking-wider"
+        className="border-b px-4 py-[7px] text-xs uppercase tracking-wider"
         style={{
           borderColor: "var(--line)",
           background: "var(--panel-2)",
@@ -39,8 +40,28 @@ function SectionCard({ title, children }: SectionCardProps) {
       >
         {title}.sys
       </header>
-      <div className="overflow-visible p-4">{children}</div>
+      <div className="overflow-visible p-[14px]">{children}</div>
     </section>
+  );
+}
+
+type BulletListProps = {
+  items: string[];
+  className?: string;
+};
+
+function BulletList({ items, className }: BulletListProps) {
+  return (
+    <ul className={`pdf-bullet-list ${className ?? ""}`}>
+      {items.map((item, idx) => (
+        <li key={`${idx}-${item.slice(0, 24)}`} className="pdf-bullet-row">
+          <span className="pdf-bullet-dot" aria-hidden="true">
+            •
+          </span>
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -48,7 +69,7 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
   return (
     <div
       id="pdf-export-layout"
-      className="p-6"
+      className="p-[22px]"
       style={{
         width: "960px",
         fontFamily:
@@ -73,12 +94,14 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
     >
       <SectionCard title="About">
         <section className="space-y-3" style={{ color: "var(--text)" }}>
-          <h2
-            className="text-lg font-semibold"
+          <h2 className="sr-only">{profile.name}</h2>
+          <AsciiName preClassName="m-0 whitespace-pre text-[8.5px] leading-[1.18] tracking-[0.01em] font-semibold" />
+          <p
+            className="text-sm font-semibold"
             style={{ color: "var(--accent)" }}
           >
             {profile.name}
-          </h2>
+          </p>
           <p className="text-sm" style={{ color: "var(--muted)" }}>
             {profile.role}
           </p>
@@ -108,30 +131,29 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
           </h2>
 
           <p className="text-sm leading-relaxed">
-            Senior AI Engineer and team lead with 9+ years of experience
-            building production-grade AI systems, LLM applications, agent
-            orchestration frameworks, and custom machine learning
-            infrastructure.
+            Senior AI Engineer and Team Lead with 9+ years of experience
+            delivering production AI systems from architecture through
+            operations.
+          </p>
+          <p
+            className="text-sm leading-relaxed"
+            style={{ color: "var(--muted)" }}
+          >
+            Specializing in LLM systems, Rust-based agent orchestration, and
+            Kubernetes-native AI infrastructure.
           </p>
 
-          <ul className="list-disc space-y-1 pl-5 text-sm">
-            <li>
-              Strong hands on expertise across Python, Rust, C++, Kubernetes,
-              cloud deployment, GPU acceleration, evolutionary computation, and
-              applied research.
-            </li>
-            <li>
-              Led AI initiatives for Flexzo, Healsgood and AiFi, translating
-              advanced research into scalable products across healthcare,
-              recommendation systems, pattern generation, and intelligent
-              platforms.
-            </li>
-            <li>Strong end-to-end ownership from prototype to production</li>
-            <li>
-              Experienced in cross-functional collaboration and technical
-              leadership
-            </li>
-          </ul>
+          <BulletList
+            className="space-y-1 text-sm"
+            items={[
+              "Led end-to-end delivery from product requirements to AI architecture, deployment, and production operations.",
+              "Built and operated a platform AI backbone (LLM services, agent workflows, and lifecycle automation) in live environments.",
+              "Developed a production-grade Rust multi-agent orchestrator for high-throughput, memory-safe execution.",
+              "Led cross-functional execution across research, engineering, and product to convert prototypes into customer-facing capabilities.",
+              "Designed cloud-native deployment patterns (Docker and Kubernetes) to improve release consistency and operability.",
+              "Hands-on across Python, Rust, C++, PyTorch/TensorFlow, distributed training, and evolutionary computation.",
+            ]}
+          />
         </section>
       </SectionCard>
 
@@ -166,11 +188,10 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
                 {job.location} • {job.period}
               </p>
 
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed">
-                {job.points.map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
-              </ul>
+              <BulletList
+                items={job.points}
+                className="mt-2 space-y-1 text-sm leading-relaxed"
+              />
             </article>
           ))}
         </section>
@@ -184,11 +205,10 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
           >
             Core Expertise
           </h2>
-          <ul className="list-disc space-y-1 pl-5 text-sm">
-            {expertise.map((item) => (
-              <li key={item.label}>{item.label}</li>
-            ))}
-          </ul>
+          <BulletList
+            items={expertise.map((item) => item.label)}
+            className="space-y-1 text-sm"
+          />
         </section>
       </SectionCard>
 
@@ -298,11 +318,10 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
           >
             Leadership strengths
           </h2>
-          <ul className="list-disc space-y-1 pl-5 text-sm">
-            {strengths.map((item) => (
-              <li key={item.label}>{item.label}</li>
-            ))}
-          </ul>
+          <BulletList
+            items={strengths.map((item) => item.label)}
+            className="space-y-1 text-sm"
+          />
         </section>
       </SectionCard>
 
@@ -347,11 +366,7 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
           >
             Certificates
           </h2>
-          <ul className="list-disc space-y-1 pl-5 text-sm">
-            {certs.map((c) => (
-              <li key={c}>{c}</li>
-            ))}
-          </ul>
+          <BulletList items={certs} className="space-y-1 text-sm" />
         </section>
       </SectionCard>
     </div>

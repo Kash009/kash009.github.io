@@ -1,11 +1,14 @@
+import AsciiName from "../AsciiName";
 import { profile } from "../../data/content";
 
 export default function AboutWindow() {
   return (
     <section className="space-y-4" style={{ color: "var(--text)" }}>
-      <h2 className="text-xl font-semibold" style={{ color: "var(--accent)" }}>
+      <h2 className="sr-only">{profile.name}</h2>
+      <AsciiName />
+      <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
         {profile.name}
-      </h2>
+      </p>
       <p className="text-sm" style={{ color: "var(--muted)" }}>
         {profile.role}
       </p>

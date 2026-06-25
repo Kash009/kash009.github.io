@@ -155,6 +155,8 @@ export async function exportElementToPdf(
     ),
   ).sort((a, b) => a - b);
 
+  const minTailPx = Math.max(12, Math.floor(pxPerMm * 1.2));
+
   const paintPageBackground = () => {
     pdf.setFillColor(backgroundColor);
     pdf.rect(0, 0, pageW, pageH, "F");
@@ -164,34 +166,43 @@ export async function exportElementToPdf(
   let pageIndex = 0;
 
   while (renderedPx < canvas.height) {
+    const remainingPx = canvas.height - renderedPx;
+    if (pageIndex > 0 && remainingPx < minTailPx) {
+      break;
+    }
+
     const currentPageHeightPx =
       pageIndex === 0 ? firstPageHeightPx : continuationPageHeightPx;
     const currentPageTopMm =
       marginMm + (pageIndex === 0 ? 0 : continuationTopGapMm);
 
-    let sliceHeightPx = Math.min(
-      currentPageHeightPx,
-      canvas.height - renderedPx,
-    );
+    const defaultSliceHeightPx = Math.min(currentPageHeightPx, remainingPx);
+    let sliceHeightPx = defaultSliceHeightPx;
 
     if (renderedPx + sliceHeightPx < canvas.height && sectionBreaksPx.length) {
       const targetEnd = renderedPx + sliceHeightPx;
-      const minPageFillPx = Math.floor(currentPageHeightPx * 0.62);
-      const minEnd = renderedPx + Math.min(minPageFillPx, sliceHeightPx - 1);
+      const minSnapFillPx = Math.floor(currentPageHeightPx * 0.82);
+      const snapWindowPx = Math.floor(currentPageHeightPx * 0.18);
+      const minBoundaryForSnap = Math.max(
+        renderedPx + minSnapFillPx,
+        targetEnd - snapWindowPx,
+      );
 
       let bestBreak = -1;
-      let fallbackBreak = -1;
       for (const boundary of sectionBreaksPx) {
         if (boundary <= renderedPx + 1) continue;
         if (boundary > targetEnd) break;
-        fallbackBreak = boundary;
-        if (boundary >= minEnd) bestBreak = boundary;
+        if (boundary >= minBoundaryForSnap) bestBreak = boundary;
       }
 
       if (bestBreak > renderedPx + 1) {
         sliceHeightPx = bestBreak - renderedPx;
-      } else if (fallbackBreak > renderedPx + 1) {
-        sliceHeightPx = fallbackBreak - renderedPx;
+
+        const remainingAfterBreak =
+          canvas.height - (renderedPx + sliceHeightPx);
+        if (remainingAfterBreak > 0 && remainingAfterBreak < minTailPx) {
+          sliceHeightPx = defaultSliceHeightPx;
+        }
       }
     }
 

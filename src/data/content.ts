@@ -41,7 +41,7 @@ export const certs = [
 
 export const expertise = [
   {
-    label: "LLM Systems and agentic AI",
+    label: "LLM systems and agentic AI",
     icon: BrainCircuit,
   },
   {
@@ -49,31 +49,31 @@ export const expertise = [
     icon: Activity,
   },
   {
-    label: "Evolutionary algorithms & NeuroEvolution",
+    label: "Evolutionary algorithms and neuroevolution",
     icon: Dna,
   },
   {
-    label: "AI Platform Architecture",
+    label: "AI platform architecture",
     icon: Workflow,
   },
   {
-    label: "Pytorch, Tensorflow, LibTorch, GGML",
+    label: "PyTorch, TensorFlow, LibTorch, GGML",
     icon: BrainCog,
   },
   {
-    label: "NLP, NLU, NLI, GANs, Computer Vision",
+    label: "NLP, NLU, NLI, GANs, computer vision",
     icon: Brain,
   },
   {
-    label: "Machine Learning & Deep Learning",
+    label: "Machine learning and deep learning",
     icon: Locate,
   },
   {
-    label: "Docker, Kubernetes, Cloud Deployment",
+    label: "Docker, Kubernetes, cloud deployment",
     icon: ShieldCheck,
   },
   {
-    label: "APIs, Microservices, Graph Databases",
+    label: "APIs, microservices, graph databases",
     icon: Database,
   },
   {
@@ -104,7 +104,7 @@ export const strengths = [
     icon: Waypoints,
   },
   {
-    label: "Cross functional collaboration",
+    label: "Cross-functional collaboration",
     icon: Users,
   },
   {
@@ -119,34 +119,34 @@ export const productsLeadership = [
     company: "Healsgood AI",
     icon: Users,
     summary:
-      "Led AI delivery for platform, including the LLM library, Rust-based agent orchestration, Ai lifecycle engine, API services and Kubernetes-base deployment.",
+      "Led end-to-end AI delivery for the platform, including an internal LLM library, Rust-based agent orchestration, an AI lifecycle engine, API services, and Kubernetes-based deployment, enabling faster feature delivery at scale.",
     // stack: ["Python", "FastAPI", "LangChain", "PostgreSQL", "Docker"],
     // impact: "Reduced first-response time by 45%.",
   },
   {
     name: "Limn AI",
-    company: "AiFi technologies",
+    company: "AiFi Technologies",
     icon: Dna,
     summary:
-      "Developed pattern generation engine using NeuroEvolution and GANs.",
+      "Developed a neuroevolution- and GAN-based pattern-generation engine, enabling rapid experimentation for creative AI use cases.",
     // stack: ["Python", "FastAPI", "LangChain", "PostgreSQL", "Docker"],
     // impact: "Reduced first-response time by 45%.",
   },
   {
     name: "Moda AI",
-    company: "AiFi technologies",
+    company: "AiFi Technologies",
     icon: Handbag,
     summary:
-      "Built browser-based fashion design solution with interactive 3D models and AI-driven pattern generation.",
+      "Built a browser-based fashion design solution with interactive 3D models and AI-driven pattern generation, enabling faster concept iteration.",
     // stack: ["Python", "FastAPI", "LangChain", "PostgreSQL", "Docker"],
     // impact: "Reduced first-response time by 45%.",
   },
   {
     name: "AiDiet",
-    company: "AiFi technologies",
+    company: "AiFi Technologies",
     icon: Broccoli,
     summary:
-      "Built a recommendation system using evolutionary strategies to suggest diet plans based on physical parameters and optional blood reports.",
+      "Built a recommendation system using evolutionary strategies to generate more personalized diet plans from physical parameters and optional blood reports.",
     // stack: ["Python", "FastAPI", "LangChain", "PostgreSQL", "Docker"],
     // impact: "Reduced first-response time by 45%.",
   },
@@ -156,42 +156,42 @@ export const projects = [
   {
     name: "Evolutionary Computation Library",
     summary:
-      "Developed an in-house library for evolutionary computation for research experiments.",
+      "Developed an in-house evolutionary-computation library to speed up experimentation and reuse across research projects.",
     stack: ["C++"],
     // impact: "",
   },
   {
     name: "Distributed Evolution",
     summary:
-      "Built a distributed architecture for evolutionary strategies across clusters of computers.",
+      "Built a distributed architecture for evolutionary strategies across computer clusters, enabling parallel optimization at larger scale.",
     stack: ["Python"],
     // impact: "",
   },
   {
     name: "Symbolic Regression",
     summary:
-      "Developed evolutionary strategies for symbolic regression with Python evolution modules and C++ grammar parsing and evaluation.",
+      "Developed symbolic-regression strategies using Python evolution modules with C++ grammar parsing/evaluation to expand search space and improve expression quality.",
     stack: ["C++", "Python"],
     // impact: "",
   },
   {
     name: "Omega Infinity (Chess Algorithm)",
     summary:
-      "Developed a modified Monte Carlo tree search algorithm, a LibTorch deep neural network and a chess engine build from scratch in C++ with alpha-beta pruning and iterative deepening.",
+      "Developed a modified Monte Carlo Tree Search algorithm, a LibTorch deep neural network, and a chess engine built from scratch in C++ to strengthen move evaluation and search quality.",
     stack: ["C++"],
     // impact: "",
   },
   {
     name: "Evolutionary Training Pipeline for Neural Networks",
     summary:
-      "Created a parallel training pipeline for an in-house Chess AI using clusters of computers.",
+      "Created a parallel training pipeline for an in-house chess AI on compute clusters to increase training throughput.",
     stack: ["C++", "Python"],
     // impact: "",
   },
   {
     name: "Heart Monitoring and Diagnosis System",
     summary:
-      "Implemented 1D-CNN for ECG beat classification, built a portable ECG device with Arduino with a bespoke ECG signal processing algorithm, and developed an Android app for monitoring and diagnosis.",
+      "Implemented a 1D-CNN for ECG beat classification, built a portable ECG device with Arduino and bespoke ECG signal processing, and developed an Android app for portable monitoring and diagnosis.",
     stack: ["Python", "Arduino", "Android"],
     // impact: "",
   },
@@ -204,10 +204,10 @@ export const stack = [
     items: [
       "LLMs",
       "GANs",
-      "Object Detection  & Recognition",
-      "Recommendation Systems",
-      "Neuro Evolution",
-      "Evolutionary Algorithms",
+      "Object detection & recognition",
+      "Recommendation systems",
+      "Neuroevolution",
+      "Evolutionary algorithms",
     ],
   },
   {
@@ -219,7 +219,7 @@ export const stack = [
     title: "Frameworks & Libraries",
     icon: ShieldCheck,
     items: [
-      "Pytorch",
+      "PyTorch",
       "TensorFlow",
       "LibTorch",
       "Celery",
@@ -240,7 +240,7 @@ export const stack = [
       "AWS",
       "GCP",
       "Terraform",
-      "Monitoring/Logging",
+      "Monitoring and logging",
       "Kubernetes",
       "Docker",
     ],
@@ -254,39 +254,39 @@ export const experience = [
     location: "Dubai, UAE",
     period: "2023 — Present",
     points: [
-      "Led AI engineering for the Careo and Flexzo AI platforms, owning AI architecture, platform intelligence, and delivery of high-value product features.",
-      "Architected and developed the core AI backbone, including LLM services, agent workflows, and intelligent platform capabilities.",
-      "Built production-ready Agent Orchestrator in Rust for high-performance, memory-safe multi-agent execution.",
-      "Designed AI API services and deployment architecture with containreization and cluster management.",
-      "Created internal LLM Library used by the platform, combining Python interfaces with Rust implementations for high performance.",
-      "Deployed and maintained LLM servers on Kubernetes clusters and developed AI lifecycle engine to support automation and platform operations.",
+      "Led AI engineering for Careo and Flexzo AI, translating product priorities into platform capabilities and shipping high-impact AI features.",
+      "Architected the platform AI backbone (LLM services, agent workflows, and orchestration layers) to improve reuse, reliability, and delivery speed.",
+      "Built a production-grade Rust multi-agent orchestrator to support high-throughput, memory-safe execution in critical workflows.",
+      "Designed AI API and deployment architecture with containerization and Kubernetes, improving operability and release consistency.",
+      "Developed an internal LLM library combining Python interfaces with Rust implementations, reducing integration overhead across product teams.",
+      "Operated Kubernetes-hosted LLM servers and built an AI lifecycle engine to automate deployment and runtime platform operations.",
     ],
   },
   {
     company: "Nord A1",
     role: "AI Consultant",
-    location: "Sweden (Remote, Part time)",
+    location: "Sweden (Remote, Part-time)",
     period: "2022 — 2023",
     points: [
-      "Developed and AI solution using transfer learning on pretrained models, clustering, and language data augmentation.",
-      "Designed a Docker-based deployment architecture on Google Cloud Platform.",
-      "Delivered native Android and iOS integration using Java and Swift for the AI solution.",
-      "Improved training data availability through effective data augmentation techniques.",
+      "Developed an AI solution using transfer learning, clustering, and language augmentation to improve model performance with limited labeled data.",
+      "Designed a Docker-based deployment architecture on Google Cloud Platform to standardize packaging and release workflows.",
+      "Delivered native Android and iOS integrations in Java and Swift, enabling production adoption in mobile workflows.",
+      "Improved training-data coverage through targeted augmentation techniques, increasing dataset robustness for model training.",
     ],
   },
   {
-    company: "AiFi technologies",
+    company: "AiFi Technologies",
     role: "AI Team Lead",
     location: "Abu Dhabi, UAE",
     period: "2018 — 2023",
     points: [
-      "Lead AI development across research and product initiatives, spanning GANs, recommendation systems, neuroevolution, intelligent pattern generation and reinforcement learning for chess AI.",
-      "Designed AI-based pattern generation algorithms using GANs and evolutionary algorithms.",
-      "Built a distributed evolutionary computation library to support research experiments and product use",
-      "Created ModularNN, an in-house neural network framework based on Eigen and optimized for evolutionary approaches.",
-      "Developed GPU acceleration approaches for neural networks workloads using OpenCL and CUDA.",
-      "Built training pipelines for chess agents using symbolic regression, Monte Carlo tree search, alpha-beta pruning, iterative deepening, reinforcement learning and LibTorch-base deep neural networks.",
-      "Worked extensively with Python, C++, PyTorch, Tensorflow, LibTorch, DyNet and distributed training workflows.",
+      "Led AI development across research and product initiatives, converting experimental work into production-ready capabilities.",
+      "Designed GAN and evolutionary-algorithm-based pattern-generation pipelines used in product and design workflows.",
+      "Built a distributed evolutionary-computation library to accelerate large-scale experimentation across compute clusters.",
+      "Created ModularNN, an in-house neural-network framework on Eigen tuned for evolutionary approaches and custom experimentation.",
+      "Developed GPU acceleration paths for neural-network workloads using OpenCL and CUDA to reduce training bottlenecks.",
+      "Built chess-agent training pipelines using symbolic regression, Monte Carlo Tree Search, alpha-beta pruning, iterative deepening, and reinforcement learning.",
+      "Standardized distributed training workflows across Python/C++ stacks (PyTorch, TensorFlow, LibTorch, DyNet) to improve reproducibility.",
     ],
   },
   {
@@ -295,7 +295,7 @@ export const experience = [
     location: "Karachi, Pakistan",
     period: "2017 — 2018",
     points: [
-      "Developed the search algorithm to travers the graph of components extracted from mobile application XML.",
+      "Developed a graph-search algorithm to traverse components extracted from mobile application XML, improving component discovery for downstream tooling.",
     ],
   },
 ];

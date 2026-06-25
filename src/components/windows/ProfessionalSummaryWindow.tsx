@@ -6,9 +6,13 @@ export default function ProfessionalSummaryWindow() {
       </h2>
 
       <p className="text-sm leading-relaxed" style={{ color: "var(--text)" }}>
-        Senior AI Engineer and team lead with 9+ years of experience building
-        production-grade AI systems, LLM applications, agent orchestration
-        frameworks, and custom machine learning infrastructure.
+        Senior AI Engineer and Team Lead with 9+ years of experience delivering
+        production AI systems from architecture through operations.
+      </p>
+
+      <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+        Specializing in LLM systems, Rust-based agent orchestration, and
+        Kubernetes-native AI infrastructure.
       </p>
 
       <ul
@@ -16,18 +20,28 @@ export default function ProfessionalSummaryWindow() {
         style={{ color: "var(--text)" }}
       >
         <li>
-          Strong hands on expertise across Python, Rust, C++, Kubernetes, cloud
-          deployment, GPU acceleration, evolutionary computation, and applied
-          research.
+          Led end-to-end delivery from product requirements to AI architecture,
+          deployment, and production operations.
         </li>
         <li>
-          Led AI initiatives for Flexzo, Healsgood and AiFi, translating
-          advanced research into scalable products across healthcare,
-          recommendation systems, pattern generation, and intelligent platforms.
+          Built and operated a platform AI backbone (LLM services, agent
+          workflows, and lifecycle automation) in live environments.
         </li>
-        <li>Strong end-to-end ownership from prototype to production</li>
         <li>
-          Experienced in cross-functional collaboration and technical leadership
+          Developed a production-grade Rust multi-agent orchestrator for
+          high-throughput, memory-safe execution.
+        </li>
+        <li>
+          Led cross-functional execution across research, engineering, and
+          product to convert prototypes into customer-facing capabilities.
+        </li>
+        <li>
+          Designed cloud-native deployment patterns (Docker and Kubernetes) to
+          improve release consistency and operability.
+        </li>
+        <li>
+          Hands-on across Python, Rust, C++, PyTorch/TensorFlow, distributed
+          training, and evolutionary computation.
         </li>
       </ul>
     </section>

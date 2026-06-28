@@ -32,11 +32,13 @@ export const profile = {
 };
 
 export const certs = [
+  "DeepLearning.AI - Fine-tuning & RL for LLMs: Intro to Post-training",
+  "DeepLearning.AI - AgenticAI",
+  "DeepLearning.AI - Transformers in Practice",
   "DeepLearning.AI - Generative Adversarial Networks Specialization",
   "NVIDIA - Fundamentals of Accelerated Computing with CUDA C/C++",
   "NVIDIA - Fundamentals of Deep Learning for Computer Vision",
   "NVIDIA - Fundamentals of Deep Learning on Multi-GPUs",
-  "Johns Hopkins University - Data Science Toolbox",
 ];
 
 export const expertise = [
@@ -261,10 +263,12 @@ export const personalProjectLinks = [
 ];
 
 export const researchInterests = [
+  "World Models, Energy-based Models, and Joint Embedding Predictive Architecture (JEPA)",
+  "Self-supervised learning and Reinforcement Learning",
   "LLM systems, alignment, and agent reliability",
-  "Rust-based multi-agent orchestration and safety",
   "Neuroevolution and evolutionary computation",
   "Distributed training and high-throughput inference systems",
+  "Rust-based multi-agent orchestration and safety",
   "Graph-based reasoning and knowledge-driven AI pipelines",
   "Practical MLOps for production AI lifecycle automation",
 ];

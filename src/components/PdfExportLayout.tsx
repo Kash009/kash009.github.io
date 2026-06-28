@@ -9,6 +9,7 @@ import {
   strengths,
   education,
   certs,
+  researchInterests,
 } from "../data/content";
 
 type PdfTheme = "dark" | "light";
@@ -309,7 +310,14 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
           </section>
         </SectionCard>
 
-        <SectionCard title="Certificates" className="col-span-2 mb-0">
+        <SectionCard title="Research Interests" className="mb-0">
+          <BulletList
+            items={researchInterests}
+            className="space-y-0.5 text-xs"
+          />
+        </SectionCard>
+
+        <SectionCard title="Certificates" className="mb-0">
           <BulletList items={certs} className="space-y-0.5 text-xs" />
         </SectionCard>
       </div>

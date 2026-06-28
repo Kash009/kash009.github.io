@@ -449,7 +449,7 @@ export default function App() {
         "kashif-ai-engineer-portfolio.pdf",
         {
           marginMm: 0,
-          continuationTopGapMm: 3,
+          continuationTopGapMm: 0,
           backgroundColor: theme === "light" ? "#f4f7fb" : "#05070a",
         },
       );

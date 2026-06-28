@@ -181,8 +181,8 @@ export async function exportElementToPdf(
 
     if (renderedPx + sliceHeightPx < canvas.height && sectionBreaksPx.length) {
       const targetEnd = renderedPx + sliceHeightPx;
-      const minSnapFillPx = Math.floor(currentPageHeightPx * 0.82);
-      const snapWindowPx = Math.floor(currentPageHeightPx * 0.18);
+      const minSnapFillPx = Math.floor(currentPageHeightPx * 0.92);
+      const snapWindowPx = Math.floor(currentPageHeightPx * 0.08);
       const minBoundaryForSnap = Math.max(
         renderedPx + minSnapFillPx,
         targetEnd - snapWindowPx,

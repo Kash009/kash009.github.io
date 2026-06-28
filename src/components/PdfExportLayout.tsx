@@ -1,5 +1,15 @@
 import type { CSSProperties, ReactNode } from "react";
 import {
+  BrainCircuit,
+  Dna,
+  Waypoints,
+  Orbit,
+  Bot,
+  Network,
+  Cpu,
+  GitBranch,
+} from "lucide-react";
+import {
   profile,
   expertise,
   stack,
@@ -8,7 +18,7 @@ import {
   experience,
   strengths,
   education,
-  certs,
+  certsByInstitute,
   researchInterests,
 } from "../data/content";
 
@@ -21,18 +31,20 @@ type SectionCardProps = {
 };
 
 function SectionCard({ title, children, className }: SectionCardProps) {
+  const allowPageBreak = className?.includes("pdf-allow-break");
+
   return (
     <section
-      className={`pdf-section mb-4 overflow-visible rounded-md border last:mb-0 ${className ?? ""}`}
+      className={`pdf-section mb-2 overflow-visible rounded-md border last:mb-0 ${className ?? ""}`}
       style={{
-        breakInside: "avoid",
-        pageBreakInside: "avoid",
+        breakInside: allowPageBreak ? "auto" : "avoid",
+        pageBreakInside: allowPageBreak ? "auto" : "avoid",
         borderColor: "var(--line)",
         background: "var(--panel)",
       }}
     >
       <header
-        className="border-b px-3.5 py-2.5 text-sm font-semibold tracking-wide"
+        className="flex min-h-[32px] items-center border-b px-2 py-1 text-[13px] font-semibold tracking-wide"
         style={{
           borderColor: "var(--line)",
           background: "var(--panel-2)",
@@ -41,7 +53,7 @@ function SectionCard({ title, children, className }: SectionCardProps) {
       >
         {title}
       </header>
-      <div className="overflow-visible p-3.5">{children}</div>
+      <div className="overflow-visible p-2">{children}</div>
     </section>
   );
 }
@@ -66,18 +78,58 @@ function BulletList({ items, className }: BulletListProps) {
   );
 }
 
+const getResearchInterestIcon = (item: string) => {
+  const text = item.toLowerCase();
+
+  if (
+    text.includes("world model") ||
+    text.includes("jepa") ||
+    text.includes("energy-based")
+  ) {
+    return Orbit;
+  }
+  if (text.includes("self-supervised") || text.includes("reinforcement")) {
+    return BrainCircuit;
+  }
+  if (text.includes("llm") || text.includes("agent")) {
+    return Bot;
+  }
+  if (text.includes("neuroevolution") || text.includes("evolutionary")) {
+    return Dna;
+  }
+  if (
+    text.includes("distributed") ||
+    text.includes("inference") ||
+    text.includes("throughput")
+  ) {
+    return Cpu;
+  }
+  if (text.includes("graph") || text.includes("knowledge")) {
+    return Network;
+  }
+  if (
+    text.includes("mlops") ||
+    text.includes("lifecycle") ||
+    text.includes("automation")
+  ) {
+    return GitBranch;
+  }
+
+  return Waypoints;
+};
+
 export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
   const rootStyle = {
-    width: "960px",
+    width: "1080px",
     fontFamily:
       "JetBrains Mono, Fira Code, Cascadia Code, ui-monospace, SFMono-Regular, Menlo, monospace",
-    lineHeight: 1.33,
+    lineHeight: 1.24,
     background: theme === "light" ? "#f4f7fb" : "#05070a",
     color: theme === "light" ? "#0f172a" : "#d1fae5",
     "--panel": theme === "light" ? "#ffffff" : "#070d12",
     "--panel-2": theme === "light" ? "#eef3f9" : "#091118",
     "--text": theme === "light" ? "#0f172a" : "#d1fae5",
-    "--muted": theme === "light" ? "#475569" : "#9ca3af",
+    "--muted": theme === "light" ? "#475569" : "#b6c2cd",
     "--accent": theme === "light" ? "#0f766e" : "#34d399",
     "--line":
       theme === "light"
@@ -90,10 +142,10 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
   } as CSSProperties;
 
   return (
-    <div id="pdf-export-layout" className="p-[18px]" style={rootStyle}>
-      <div className="mb-4 grid grid-cols-2 gap-4">
-        <SectionCard title="About" className="mb-0">
-          <section className="space-y-2.5" style={{ color: "var(--text)" }}>
+    <div id="pdf-export-layout" className="p-[10px]" style={rootStyle}>
+      <div className="mb-2 grid grid-cols-2 gap-2">
+        <SectionCard title="About" className="mb-0 h-full">
+          <section className="space-y-2" style={{ color: "var(--text)" }}>
             <h1
               className="text-lg font-semibold"
               style={{ color: "var(--accent)" }}
@@ -122,8 +174,8 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
           </section>
         </SectionCard>
 
-        <SectionCard title="Professional Summary" className="mb-0">
-          <section className="space-y-2.5" style={{ color: "var(--text)" }}>
+        <SectionCard title="Professional Summary" className="mb-0 h-full">
+          <section className="space-y-2" style={{ color: "var(--text)" }}>
             <p className="text-xs leading-relaxed">
               Senior AI Engineer and Team Lead with 9+ years delivering
               production AI systems from architecture through operations.
@@ -149,12 +201,110 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
         </SectionCard>
       </div>
 
-      <SectionCard title="Experience" className="mb-4">
-        <section className="space-y-2.5" style={{ color: "var(--text)" }}>
+      <div className="mb-2 grid grid-cols-2 gap-2">
+        <SectionCard title="Technical Stack" className="mb-0 h-full">
+          <section style={{ color: "var(--text)" }}>
+            <p
+              className="text-[10px] leading-relaxed"
+              style={{ color: "var(--muted)" }}
+            >
+              Core technologies used across model development, platform
+              engineering, and production infrastructure.
+            </p>
+
+            <div className="mt-2 grid grid-cols-1 gap-1.5">
+              {stack.map(({ title, items, icon: Icon }) => (
+                <article
+                  key={title}
+                  className="rounded border p-1.5"
+                  style={{
+                    borderColor: "var(--line)",
+                    background: "var(--surface-tint-1)",
+                  }}
+                >
+                  <div className="flex items-start gap-2">
+                    <span
+                      className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border"
+                      style={{
+                        borderColor: "var(--line)",
+                        background: "var(--panel-2)",
+                        color: "var(--accent)",
+                      }}
+                    >
+                      <Icon size={12} />
+                    </span>
+
+                    <div className="min-w-0">
+                      <p
+                        className="text-xs font-semibold"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {title}
+                      </p>
+                      <p className="mt-0.5 text-[11px] leading-snug [overflow-wrap:anywhere]">
+                        {items.join(", ")}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </SectionCard>
+
+        <SectionCard title="Research Interests" className="mb-0 h-full">
+          <section className="space-y-1" style={{ color: "var(--text)" }}>
+            <p
+              className="text-[10px] leading-relaxed"
+              style={{ color: "var(--muted)" }}
+            >
+              Current focus areas guiding research and production
+              experimentation.
+            </p>
+
+            <div className="mt-2 grid grid-cols-1 gap-1.5">
+              {researchInterests.map((item) => {
+                const Icon = getResearchInterestIcon(item);
+
+                return (
+                  <article
+                    key={item}
+                    className="rounded border p-1.5"
+                    style={{
+                      borderColor: "var(--line)",
+                      background: "var(--surface-tint-1)",
+                    }}
+                  >
+                    <div className="flex items-start gap-2">
+                      <span
+                        className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border"
+                        style={{
+                          borderColor: "var(--line)",
+                          background: "var(--panel-2)",
+                          color: "var(--accent)",
+                        }}
+                        aria-hidden="true"
+                      >
+                        <Icon size={11} strokeWidth={2} />
+                      </span>
+                      <p className="text-xs leading-snug [overflow-wrap:anywhere]">
+                        {item}
+                      </p>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        </SectionCard>
+      </div>
+
+      <SectionCard title="Experience" className="mb-2">
+        <section className="space-y-2" style={{ color: "var(--text)" }}>
           {experience.map((job) => (
             <article
               key={`${job.company}-${job.role}`}
-              className="pdf-breakpoint rounded border p-2.5"
+              className="pdf-breakpoint rounded border p-1.5"
               style={{
                 borderColor: "var(--line)",
                 background: "var(--surface-tint-1)",
@@ -173,7 +323,7 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
                   </p>
                 </div>
                 <p
-                  className="shrink-0 text-[11px]"
+                  className="shrink-0 text-xs"
                   style={{ color: "var(--muted)" }}
                 >
                   {job.period}
@@ -182,7 +332,7 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
 
               {job.impact ? (
                 <p
-                  className="mt-1 text-[11px] leading-relaxed"
+                  className="mt-0.5 text-[11px] leading-relaxed"
                   style={{ color: "var(--muted)" }}
                 >
                   <span
@@ -197,7 +347,7 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
 
               {job.stack?.length ? (
                 <p
-                  className="mt-1 text-[11px] leading-relaxed"
+                  className="mt-0.5 text-[11px] leading-relaxed"
                   style={{ color: "var(--muted)" }}
                 >
                   <span
@@ -211,88 +361,240 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
               ) : null}
 
               <BulletList
-                items={job.points.slice(0, 4)}
-                className="mt-1.5 space-y-0.5 text-xs leading-relaxed"
+                items={job.points}
+                className="mt-1 space-y-0.5 text-xs leading-relaxed"
               />
             </article>
           ))}
         </section>
       </SectionCard>
 
-      <div className="grid grid-cols-2 gap-4">
-        <SectionCard title="Core Expertise" className="mb-0">
-          <BulletList
-            items={expertise.map((item) => item.label)}
-            className="space-y-0.5 text-xs"
-          />
-        </SectionCard>
-
-        <SectionCard title="Technical Stack" className="mb-0">
-          <section className="space-y-1.5" style={{ color: "var(--text)" }}>
-            {stack.map((group) => (
-              <p key={group.title} className="text-[11px] leading-relaxed">
-                <span
-                  className="font-semibold"
-                  style={{ color: "var(--accent)" }}
-                >
-                  {group.title}:
-                </span>{" "}
-                {group.items.join(", ")}
+      <div className="space-y-1.5">
+        <div className="grid grid-cols-2 items-stretch gap-2">
+          <SectionCard
+            title="Selected Products & Leadership"
+            className="mb-0 h-full"
+          >
+            <section style={{ color: "var(--text)" }}>
+              <p
+                className="text-[10px] leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
+                Product initiatives delivered through technical leadership and
+                cross-functional execution.
               </p>
-            ))}
-          </section>
-        </SectionCard>
 
-        <SectionCard title="Selected Products & Leadership" className="mb-0">
-          <section className="space-y-2" style={{ color: "var(--text)" }}>
-            {productsLeadership.map((item) => (
-              <article key={`${item.company}-${item.name}`}>
-                <p
-                  className="text-xs font-semibold"
-                  style={{ color: "var(--accent)" }}
+              <div className="mt-2 grid grid-cols-1 gap-1.5">
+                {productsLeadership.slice(0, 3).map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <article
+                      key={`${item.company}-${item.name}`}
+                      className="rounded border p-1.5"
+                      style={{
+                        borderColor: "var(--line)",
+                        background: "var(--surface-tint-1)",
+                      }}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex min-w-0 items-start gap-2">
+                          <span
+                            className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border"
+                            style={{
+                              borderColor: "var(--line)",
+                              background: "var(--panel-2)",
+                              color: "var(--accent)",
+                            }}
+                          >
+                            <Icon size={12} />
+                          </span>
+
+                          <p
+                            className="min-w-0 text-xs font-semibold leading-snug [overflow-wrap:anywhere]"
+                            style={{ color: "var(--accent)" }}
+                          >
+                            {item.name}
+                          </p>
+                        </div>
+
+                        <span
+                          className="shrink-0 text-[10px]"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          {item.company}
+                        </span>
+                      </div>
+
+                      <p className="mt-1 text-[10px] leading-relaxed">
+                        {item.summary}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          </SectionCard>
+
+          <SectionCard
+            title="Selected Research & Engineering Projects"
+            className="mb-0 h-full"
+          >
+            <section style={{ color: "var(--text)" }}>
+              <p
+                className="text-[10px] leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
+                Research-heavy engineering projects translated into reusable
+                systems and practical outcomes.
+              </p>
+
+              <div className="mt-2 grid grid-cols-1 gap-1.5">
+                {projects.slice(0, 3).map((p) => (
+                  <article
+                    key={p.name}
+                    className="rounded border p-1.5"
+                    style={{
+                      borderColor: "var(--line)",
+                      background: "var(--surface-tint-1)",
+                    }}
+                  >
+                    <p
+                      className="text-xs font-semibold leading-snug [overflow-wrap:anywhere]"
+                      style={{ color: "var(--accent)" }}
+                    >
+                      {p.name}
+                    </p>
+
+                    <p className="mt-1 text-[10px] leading-relaxed">
+                      {p.summary}
+                    </p>
+
+                    <p
+                      className="mt-1.5 text-[10px]"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      Stack: {p.stack.join(", ")}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </SectionCard>
+        </div>
+
+        <SectionCard title="Core Expertise" className="mb-0 pdf-allow-break">
+          <section style={{ color: "var(--text)" }}>
+            <p
+              className="text-[10px] leading-relaxed"
+              style={{ color: "var(--muted)" }}
+            >
+              Key capability areas across AI engineering, platform architecture,
+              and production delivery.
+            </p>
+
+            <div className="mt-2 grid grid-cols-2 gap-1.5">
+              {expertise.map(({ label, icon: Icon }) => (
+                <article
+                  key={label}
+                  className="rounded border p-1.5 pdf-breakpoint"
+                  style={{
+                    borderColor: "var(--line)",
+                    background: "var(--surface-tint-1)",
+                  }}
                 >
-                  {item.name}
-                </p>
-                <p className="text-[11px]" style={{ color: "var(--muted)" }}>
-                  {item.company}
-                </p>
-                <p className="text-[11px] leading-relaxed">{item.summary}</p>
-              </article>
-            ))}
+                  <div className="flex items-start gap-2">
+                    <span
+                      className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border"
+                      style={{
+                        borderColor: "var(--line)",
+                        background: "var(--panel-2)",
+                        color: "var(--accent)",
+                      }}
+                    >
+                      <Icon size={12} strokeWidth={2} />
+                    </span>
+                    <p className="min-w-0 text-xs leading-snug [overflow-wrap:anywhere]">
+                      {label}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </section>
         </SectionCard>
 
-        <SectionCard
-          title="Selected Research & Engineering Projects"
-          className="mb-0"
-        >
-          <section className="space-y-2" style={{ color: "var(--text)" }}>
-            {projects.slice(0, 4).map((p) => (
-              <article key={p.name}>
-                <p
-                  className="text-xs font-semibold"
-                  style={{ color: "var(--accent)" }}
+        <div className="grid grid-cols-2 items-start gap-2">
+          <SectionCard title="Leadership Strengths" className="mb-0">
+            <section style={{ color: "var(--text)" }}>
+              <p
+                className="text-[10px] leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
+                Leadership traits used to align teams, execution, and product
+                outcomes.
+              </p>
+
+              <div className="mt-2 grid grid-cols-1 gap-1.5">
+                {strengths.slice(0, 4).map(({ label, icon: Icon }) => (
+                  <article
+                    key={label}
+                    className="rounded border p-1.5"
+                    style={{
+                      borderColor: "var(--line)",
+                      background: "var(--surface-tint-1)",
+                    }}
+                  >
+                    <div className="flex items-start gap-2">
+                      <span
+                        className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border"
+                        style={{
+                          borderColor: "var(--line)",
+                          background: "var(--panel-2)",
+                          color: "var(--accent)",
+                        }}
+                      >
+                        <Icon size={12} strokeWidth={2} />
+                      </span>
+                      <p className="min-w-0 text-xs leading-snug [overflow-wrap:anywhere]">
+                        {label}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </SectionCard>
+
+          <SectionCard title="Certificates" className="mb-0 pdf-allow-break">
+            <section className="space-y-1" style={{ color: "var(--text)" }}>
+              {certsByInstitute.map(({ institute, items }) => (
+                <article
+                  key={institute}
+                  className="rounded border p-1.5 pdf-breakpoint"
+                  style={{
+                    borderColor: "var(--line)",
+                    background: "var(--surface-tint-1)",
+                  }}
                 >
-                  {p.name}
-                </p>
-                <p className="text-[11px] leading-relaxed">{p.summary}</p>
-                <p className="text-[11px]" style={{ color: "var(--muted)" }}>
-                  Stack: {p.stack.join(", ")}
-                </p>
-              </article>
-            ))}
-          </section>
-        </SectionCard>
+                  <p
+                    className="text-[10px] uppercase tracking-wider"
+                    style={{ color: "var(--accent)" }}
+                  >
+                    {institute}
+                  </p>
 
-        <SectionCard title="Leadership Strengths" className="mb-0">
-          <BulletList
-            items={strengths.map((item) => item.label)}
-            className="space-y-0.5 text-xs"
-          />
-        </SectionCard>
+                  <BulletList
+                    items={items}
+                    className="mt-1 space-y-0.5 text-xs"
+                  />
+                </article>
+              ))}
+            </section>
+          </SectionCard>
+        </div>
 
         <SectionCard title="Education" className="mb-0">
-          <section className="space-y-1.5" style={{ color: "var(--text)" }}>
+          <section className="space-y-1" style={{ color: "var(--text)" }}>
             {education.map((e) => (
               <article key={`${e.school}-${e.degree}`}>
                 <p
@@ -301,24 +603,13 @@ export default function PdfExportLayout({ theme }: { theme: PdfTheme }) {
                 >
                   {e.degree}
                 </p>
-                <p className="text-[11px]">{e.school}</p>
-                <p className="text-[11px]" style={{ color: "var(--muted)" }}>
+                <p className="text-[10px]">{e.school}</p>
+                <p className="text-[10px]" style={{ color: "var(--muted)" }}>
                   {e.period}
                 </p>
               </article>
             ))}
           </section>
-        </SectionCard>
-
-        <SectionCard title="Research Interests" className="mb-0">
-          <BulletList
-            items={researchInterests}
-            className="space-y-0.5 text-xs"
-          />
-        </SectionCard>
-
-        <SectionCard title="Certificates" className="mb-0">
-          <BulletList items={certs} className="space-y-0.5 text-xs" />
         </SectionCard>
       </div>
     </div>

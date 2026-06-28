@@ -17,13 +17,19 @@ export default function TechnicalStackWindow() {
           }}
         >
           <h3
-            className="mb-2 flex items-center gap-2 text-xs uppercase tracking-wider"
+            className="mb-2 flex items-center gap-2.5 text-xs uppercase tracking-wider"
             style={{ color: "var(--accent)" }}
           >
-            <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center pdf-icon-fix">
-              <Icon size={14} style={{ color: "var(--accent)" }} />
+            <span
+              className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border"
+              style={{
+                borderColor: "var(--line)",
+                background: "var(--surface-tint-2)",
+              }}
+            >
+              <Icon size={12} style={{ color: "var(--accent)" }} />
             </span>
-            <span>{title}</span>
+            <span className="leading-none">{title}</span>
           </h3>
 
           <div className="flex flex-wrap gap-2">

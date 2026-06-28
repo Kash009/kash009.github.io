@@ -41,6 +41,18 @@ export const certs = [
   "NVIDIA - Fundamentals of Deep Learning on Multi-GPUs",
 ];
 
+export const certsByInstitute = Object.entries(
+  certs.reduce<Record<string, string[]>>((acc, cert) => {
+    const [institutePart, ...titleParts] = cert.split(" - ");
+    const institute = institutePart.trim();
+    const title = titleParts.join(" - ").trim() || cert;
+
+    if (!acc[institute]) acc[institute] = [];
+    acc[institute].push(title);
+    return acc;
+  }, {}),
+).map(([institute, items]) => ({ institute, items }));
+
 export const expertise = [
   {
     label: "LLM systems and agentic AI",
@@ -59,7 +71,7 @@ export const expertise = [
     icon: Workflow,
   },
   {
-    label: "PyTorch, TensorFlow, LibTorch, GGML",
+    label: "PyTorch, TensorFlow, LibTorch, GGML, vLLM, LLama-cpp",
     icon: BrainCog,
   },
   {
@@ -220,15 +232,7 @@ export const stack = [
   {
     title: "Frameworks & Libraries",
     icon: ShieldCheck,
-    items: [
-      "PyTorch",
-      "TensorFlow",
-      "LibTorch",
-      "Celery",
-      "Eigen",
-      "Boost",
-      "CUDA",
-    ],
+    items: ["PyTorch", "TensorFlow", "LibTorch", "Celery", "CUDA", "GGML"],
   },
   {
     title: "Databases",
@@ -268,7 +272,7 @@ export const researchInterests = [
   "LLM systems, alignment, and agent reliability",
   "Neuroevolution and evolutionary computation",
   "Distributed training and high-throughput inference systems",
-  "Rust-based multi-agent orchestration and safety",
+  // "Rust-based multi-agent orchestration and safety",
   "Graph-based reasoning and knowledge-driven AI pipelines",
   "Practical MLOps for production AI lifecycle automation",
 ];
@@ -279,13 +283,27 @@ export const experience = [
     role: "Senior AI Engineer",
     location: "Dubai, UAE",
     period: "2023 — Present",
-    stack: ["Rust", "Python", "LLMs", "Kubernetes", "Docker", "API Services"],
+    stack: [
+      "Rust",
+      "Python",
+      "LLMs",
+      "Kubernetes",
+      "Docker",
+      "API Services",
+      "AWS EKS",
+      "GCP GKE",
+      "vLLM",
+      "LLamaCPP",
+    ],
     impact:
       "Delivered production AI capabilities across Careo and Flexzo AI through platform-level architecture and execution.",
     points: [
       "Led AI engineering for Careo and Flexzo AI, translating product priorities into platform capabilities and shipping high-impact AI features.",
       "Architected the platform AI backbone (LLM services, agent workflows, and orchestration layers) to improve reuse, reliability, and delivery speed.",
+      "Finetuned LLM and Vision-based models to improve performance on domain-specific tasks.",
+      "Self-hosted LLMs and vision models on cloud infrastructure to improve privacy and control over model execution.",
       "Built a production-grade Rust multi-agent orchestrator to support high-throughput, memory-safe execution in critical workflows.",
+      "Designed and built knowledge graph-based agents to enhance reasoning capabilities and knowledge retrieval in AI workflows.",
       "Designed AI API and deployment architecture with containerization and Kubernetes, improving operability and release consistency.",
       "Developed an internal LLM library combining Python interfaces with Rust implementations, reducing integration overhead across product teams.",
       "Operated Kubernetes-hosted LLM servers and built an AI lifecycle engine to automate deployment and runtime platform operations.",
